@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "F3C4D9C2-69CE-4331-914C-A1B2DCDA78C4",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Drink More Water.xcodeproj",
+      "identifier" : "B33723793033FA8F004E3347",
+      "name" : "Drink More Water"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Drink More Water.xcodeproj",
+        "identifier" : "B33723863033FA91004E3347",
+        "name" : "Drink More WaterTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Drink More Water.xcodeproj",
+        "identifier" : "B33723903033FA91004E3347",
+        "name" : "Drink More WaterUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
