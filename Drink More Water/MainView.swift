@@ -21,35 +21,23 @@ struct MainView: View {
     private var settings: AppSettings? { settingsRows.first }
     private var isConfigured: Bool { settings?.hasCompletedSetup ?? false }
 
-    /// A slot is only "answerable" if it fired within one full interval.
-    /// Beyond that, it should have been backfilled as .missed.
-    private var maxAnswerableOverdue: TimeInterval {
-        TimeInterval(settings?.intervalMinutes ?? 60) * 60
-    }
+    /// A slot is answerable for 90 seconds after it fires.
+    private let answerableWindow: TimeInterval = 90
 
     // MARK: Slot logic
 
-    /// The slot the user should answer right now.
-    ///
-    /// Priority:
-    ///  1. The most recent slot that fired within the answerable window
-    ///     (less than one interval ago) and has no recorded response.
-    ///  2. Otherwise, the next upcoming slot (for the countdown).
     private var activeSlot: Date? {
         guard let settings else { return nil }
         let slots = SchedulingCalculator.slots(on: calendar.startOfDay(for: now), settings: settings)
         let recorded = Set(events.map { $0.scheduledAt })
         let open = slots.filter { !recorded.contains($0) }
 
-        // Most recent overdue slot that's still within the answerable window.
-        if let overdue = open.last(where: { $0 < now && now.timeIntervalSince($0) < maxAnswerableOverdue }) {
+        if let overdue = open.last(where: { $0 < now && now.timeIntervalSince($0) < answerableWindow }) {
             return overdue
         }
-        // Next upcoming slot.
         return open.first(where: { $0 >= now })
     }
 
-    /// True while we are inside the daily reminder window.
     private var withinWindow: Bool {
         guard let settings else { return false }
         let slots = SchedulingCalculator.slots(on: calendar.startOfDay(for: now), settings: settings)
@@ -57,14 +45,11 @@ struct MainView: View {
         return now >= first && now <= last
     }
 
-    /// Show Drink/Ignore buttons when a slot has fired and is still
-    /// unanswered (within the answerable window).
     private var isDue: Bool {
         guard let slot = activeSlot, withinWindow else { return false }
         return slot <= now
     }
 
-    /// The next *upcoming* (future) slot, for the countdown display.
     private var nextUpcomingSlot: Date? {
         guard let settings else { return nil }
         let slots = SchedulingCalculator.slots(on: calendar.startOfDay(for: now), settings: settings)
@@ -72,7 +57,6 @@ struct MainView: View {
         return slots.first { $0 >= now && !recorded.contains($0) }
     }
 
-    /// First slot tomorrow, for the "all done" state.
     private var nextTomorrowSlot: Date? {
         guard let settings else { return nil }
         let tomorrow = calendar.startOfDay(for: now.addingTimeInterval(86400))
@@ -94,36 +78,27 @@ struct MainView: View {
                 placeholder
             }
         }
-        .onReceive(ticker) { now = $0 }
+        .onReceive(ticker) { date in
+            now = date
+        }
         .task {
             let store = HydrationEventStore(modelContainer: modelContainer)
             if let fetched = store.fetchOrCreateSettings() {
                 if fetched.hasCompletedSetup {
                     await store.backfillMissed(settings: fetched, lookback: .hours(24))
-
-                    // Only re-register notifications if they're actually
-                    // missing. This prevents racing with the reschedule
-                    // that didReceive already triggered, which was wiping
-                    // out the re-registered (sound-bearing) requests.
-                    let center = UNUserNotificationCenter.current()
-                    let pending = await center.pendingNotificationRequests()
-                    if pending.isEmpty {
-                        NotificationScheduler(modelContainer: modelContainer).reschedule(settings: fetched)
-                    }
+                    await store.autoIgnoreExpired(settings: fetched, window: answerableWindow)
+                    NotificationScheduler(modelContainer: modelContainer).topUp(settings: fetched)
                 }
             }
             settingsLoaded = true
         }
         .onChange(of: scenePhase) { _, newPhase in
-            // Top up the 64-request pending queue whenever the user
-            // returns to the app. Without this, a 5-minute-interval
-            // schedule (157 slots/day) would run out of registered
-            // notifications after ~5 hours.
             guard newPhase == .active, isConfigured, let settings else { return }
             let store = HydrationEventStore(modelContainer: modelContainer)
             Task {
                 await store.backfillMissed(settings: settings, lookback: .hours(24))
-                NotificationScheduler(modelContainer: modelContainer).reschedule(settings: settings)
+                await store.autoIgnoreExpired(settings: settings, window: answerableWindow)
+                NotificationScheduler(modelContainer: modelContainer).topUp(settings: settings)
             }
         }
     }
@@ -241,6 +216,9 @@ struct MainView: View {
     // MARK: Actions
 
     private func respond(_ type: ResponseType) {
+        // Stop any playing notification audio immediately.
+        NotificationSoundPlayer.shared.stop()
+
         guard let settings, let slot = activeSlot else { return }
         let store = HydrationEventStore(modelContainer: modelContainer)
         let event = ReminderEvent(scheduledAt: slot, response: type, personName: settings.personName)

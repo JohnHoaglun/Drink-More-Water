@@ -37,9 +37,7 @@ final class HydrationEventStore: @unchecked Sendable {
     ///   - settings: the active schedule.
     ///   - lookback: how far back to search (e.g. 24 h).
     ///   - forceAll: when `true`, every slot before *now* is treated as
-    ///     expired (not just those older than one interval). Use this on
-    ///     first save / schedule change so stale slots don't trigger the
-    ///     Drink/Ignore buttons.
+    ///     expired (not just those older than one interval).
     func backfillMissed(settings: AppSettings, lookback: Duration, forceAll: Bool = false) async {
         guard let modelContainer else { return }
         let context = ModelContext(modelContainer)
@@ -47,8 +45,6 @@ final class HydrationEventStore: @unchecked Sendable {
         let now = Date()
         let lookbackStart = now.addingTimeInterval(-seconds(from: lookback))
 
-        // forceAll → boundary is "now" (everything before now is missed).
-        // Normal   → boundary is "now − one interval" (only stale slots).
         let expiredBefore = forceAll
             ? now
             : now.addingTimeInterval(-TimeInterval(max(settings.intervalMinutes, 1) * 60))
@@ -63,6 +59,34 @@ final class HydrationEventStore: @unchecked Sendable {
         for slot in SchedulingCalculator.slots(from: searchStart, to: expiredBefore, settings: settings)
         where !recordedSlots.contains(slot) {
             context.insert(ReminderEvent(scheduledAt: slot, response: .missed,
+                                         personName: settings.personName))
+        }
+
+        try? context.save()
+        await Task.yield()
+    }
+
+    // MARK: Auto-ignore expired slots
+
+    /// Records unresponded slots that are older than `window` seconds
+    /// as `.ignore`. This is the 90-second expiry: if the user didn't
+    /// tap Drink or Ignore (on the notification or in-app) within the
+    /// window, the slot is counted as ignored and buttons disappear.
+    func autoIgnoreExpired(settings: AppSettings, window: TimeInterval) async {
+        guard let modelContainer else { return }
+        let context = ModelContext(modelContainer)
+
+        let now = Date()
+        let cutoff = now.addingTimeInterval(-window)
+        let lookback = now.addingTimeInterval(-seconds(from: .hours(1)))
+
+        let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= lookback && $0.scheduledAt < cutoff }
+        let recent = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
+        let recordedSlots = Set(recent.map { $0.scheduledAt })
+
+        for slot in SchedulingCalculator.slots(from: lookback, to: cutoff, settings: settings)
+        where !recordedSlots.contains(slot) {
+            context.insert(ReminderEvent(scheduledAt: slot, response: .ignore,
                                          personName: settings.personName))
         }
 
