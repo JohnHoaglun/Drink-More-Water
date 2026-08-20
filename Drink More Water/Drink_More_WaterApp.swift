@@ -6,7 +6,7 @@ import Combine
 
 // MARK: - Theme Manager
 // Using a dedicated class allows the ColorScheme to update reactively.
-// @State cannot be used in an @main App struct.
+// @State cannot be used in a @main App struct.
 @MainActor
 final class ThemeManager: ObservableObject {
     @Published var activeScheme: ColorScheme? = nil
@@ -115,7 +115,7 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @u
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        .banner
+        [.banner, .sound, .list]
     }
 
     func userNotificationCenter(

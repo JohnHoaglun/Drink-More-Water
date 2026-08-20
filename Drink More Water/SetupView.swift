@@ -47,13 +47,37 @@ struct SetupView: View {
 
         Task {
             let store = HydrationEventStore(modelContainer: modelContainer)
-            // Mark every past slot as missed so the Home page shows the
-            // countdown immediately instead of stale Drink/Ignore buttons.
             await store.backfillMissed(settings: settings, lookback: .hours(24), forceAll: true)
             NotificationScheduler(modelContainer: modelContainer).reschedule(settings: settings)
         }
     }
 }
+
+// MARK: - Sound options
+
+/// A tone the user can pick. `id` is the filename in the app bundle;
+/// `"default"` maps to `UNNotificationSound.default`.
+struct SoundOption: Identifiable, Hashable {
+    let id: String
+    let label: String
+
+    static let all: [SoundOption] = [
+        SoundOption(id: "default",     label: "Default"),
+        SoundOption(id: "Drink1.m4a",  label: "Drink 1"),
+        SoundOption(id: "Drink2.m4a",  label: "Drink 2"),
+        SoundOption(id: "Drink3.m4a",  label: "Drink 3"),
+        SoundOption(id: "Drink4.mp3",  label: "Drink 4"),
+        SoundOption(id: "Drum1.m4a",   label: "Drum 1"),
+        SoundOption(id: "Drum2.m4a",   label: "Drum 2"),
+        SoundOption(id: "Drum3.m4a",   label: "Drum 3"),
+    ]
+
+    static func match(_ id: String) -> SoundOption {
+        all.first { $0.id == id } ?? all[0]
+    }
+}
+
+// MARK: - Form
 
 private struct SetupForm: View {
     @Bindable var settings: AppSettings
@@ -67,6 +91,9 @@ private struct SetupForm: View {
     @State private var colorSchemeOverride: String?
     @State private var colorSchemeSelection: ColorSchemeOption
 
+    /// Reused player so we don't leak AVAudioPlayer instances on rapid taps.
+    @State private var previewPlayer: AVAudioPlayer?
+
     enum ColorSchemeOption: String, CaseIterable, Identifiable {
         case system
         case light
@@ -75,36 +102,34 @@ private struct SetupForm: View {
         var label: String {
             switch self {
             case .system: return "Follow System"
-            case .light: return "Light"
-            case .dark: return "Dark"
+            case .light:  return "Light"
+            case .dark:   return "Dark"
             }
         }
     }
 
-    private static let systemTones: [String] = [
-        "default",
-        "sms-received1.caf",
-        "sms-received2.caf",
-        "sms-received3.caf",
-        "sms-received4.caf",
-        "sms-received5.caf",
-        "sms-received6.caf"
-    ]
-    
-    private static let toneIDs: [String: SystemSoundID] = [
-        "default": 1007,
-        "sms-received1.caf": 1007,
-        "sms-received2.caf": 1016,
-        "sms-received3.caf": 1022,
-        "sms-received4.caf": 1023,
-        "sms-received5.caf": 1024,
-        "sms-received6.caf": 1025
-    ]
-
     private func playPreview() {
         guard settings.isAudible else { return }
-        let id = Self.toneIDs[selectedSound] ?? 1007
-        AudioServicesPlaySystemSound(id)
+        previewPlayer?.stop()
+        previewPlayer = nil
+
+        if selectedSound == "default" {
+            AudioServicesPlaySystemSound(1007)
+            return
+        }
+
+        guard let url = Bundle.main.url(forResource: (selectedSound as NSString).deletingPathExtension,
+                                       withExtension: (selectedSound as NSString).pathExtension) else {
+            return
+        }
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.prepareToPlay()
+            player.play()
+            previewPlayer = player
+        } catch {
+            print("Sound preview failed: \(error)")
+        }
     }
 
     init(settings: AppSettings, onSaved: @escaping () -> Void) {
@@ -122,8 +147,8 @@ private struct SetupForm: View {
         let initialSelection: ColorSchemeOption = {
             switch settings.colorSchemeOverride {
             case "light": return .light
-            case "dark": return .dark
-            default: return .system
+            case "dark":  return .dark
+            default:      return .system
             }
         }()
         _colorSchemeSelection = State(initialValue: initialSelection)
@@ -142,7 +167,7 @@ private struct SetupForm: View {
                 DatePicker("Last reminder",
                            selection: $endDate,
                            displayedComponents: .hourAndMinute)
-                Stepper(value: $settings.intervalMinutes, in: 10...600, step: 5) {
+                Stepper(value: $settings.intervalMinutes, in: 5...600, step: 5) {
                     Text("Every \(settings.intervalMinutes) minutes")
                 }
             }
@@ -150,8 +175,8 @@ private struct SetupForm: View {
             Section("Alerts") {
                 Toggle("Audible alerts", isOn: $settings.isAudible)
                 Picker("Tone", selection: $selectedSound) {
-                    ForEach(Self.systemTones, id: \.self) { tone in
-                        Text(tone == "default" ? "Default" : tone).tag(tone)
+                    ForEach(SoundOption.all) { option in
+                        Text(option.label).tag(option.id)
                     }
                 }
                 .disabled(!settings.isAudible)

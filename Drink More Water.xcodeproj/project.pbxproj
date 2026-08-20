@@ -6,6 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B3700D9A30369F99007D84B4 /* Drum3.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B3700D9330369F99007D84B4 /* Drum3.m4a */; };
+		B3700D9B30369F99007D84B4 /* Drum1.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B3700D9430369F99007D84B4 /* Drum1.m4a */; };
+		B3700D9C30369F99007D84B4 /* Drum2.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B3700D9530369F99007D84B4 /* Drum2.m4a */; };
+		B3700D9D30369F99007D84B4 /* Drink4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B3700D9630369F99007D84B4 /* Drink4.mp3 */; };
+		B3700D9E30369F99007D84B4 /* Drink3.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B3700D9730369F99007D84B4 /* Drink3.m4a */; };
+		B3700D9F30369F99007D84B4 /* Drink1.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B3700D9830369F99007D84B4 /* Drink1.m4a */; };
+		B3700DA030369F99007D84B4 /* Drink2.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B3700D9930369F99007D84B4 /* Drink2.m4a */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		B33723883033FA91004E3347 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,7 +37,14 @@
 		B337237A3033FA8F004E3347 /* Drink More Water.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Drink More Water.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B33723873033FA91004E3347 /* Drink More WaterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Drink More WaterTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B33723913033FA91004E3347 /* Drink More WaterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Drink More WaterUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B35C78863035371E0073FFAD /* Drink More Water.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Drink More Water.xctestplan"; sourceTree = "<group>"; };
+		B35C78863035371E0073FFAD /* Drink More Water.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Drink More Water.xctestplan"; sourceTree = "<group>"; };
+		B3700D9330369F99007D84B4 /* Drum3.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drum3.m4a; path = audio/Small/Drum3.m4a; sourceTree = "<group>"; };
+		B3700D9430369F99007D84B4 /* Drum1.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drum1.m4a; path = audio/Small/Drum1.m4a; sourceTree = "<group>"; };
+		B3700D9530369F99007D84B4 /* Drum2.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drum2.m4a; path = audio/Small/Drum2.m4a; sourceTree = "<group>"; };
+		B3700D9630369F99007D84B4 /* Drink4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = Drink4.mp3; path = audio/Small/Drink4.mp3; sourceTree = "<group>"; };
+		B3700D9730369F99007D84B4 /* Drink3.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drink3.m4a; path = audio/Small/Drink3.m4a; sourceTree = "<group>"; };
+		B3700D9830369F99007D84B4 /* Drink1.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drink1.m4a; path = audio/Small/Drink1.m4a; sourceTree = "<group>"; };
+		B3700D9930369F99007D84B4 /* Drink2.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drink2.m4a; path = audio/Small/Drink2.m4a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -76,6 +93,13 @@
 		B33723713033FA8F004E3347 = {
 			isa = PBXGroup;
 			children = (
+				B3700D9830369F99007D84B4 /* Drink1.m4a */,
+				B3700D9930369F99007D84B4 /* Drink2.m4a */,
+				B3700D9730369F99007D84B4 /* Drink3.m4a */,
+				B3700D9630369F99007D84B4 /* Drink4.mp3 */,
+				B3700D9430369F99007D84B4 /* Drum1.m4a */,
+				B3700D9530369F99007D84B4 /* Drum2.m4a */,
+				B3700D9330369F99007D84B4 /* Drum3.m4a */,
 				B35C78863035371E0073FFAD /* Drink More Water.xctestplan */,
 				B337237C3033FA8F004E3347 /* Drink More Water */,
 				B337238A3033FA91004E3347 /* Drink More WaterTests */,
@@ -214,6 +238,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3700D9A30369F99007D84B4 /* Drum3.m4a in Resources */,
+				B3700D9B30369F99007D84B4 /* Drum1.m4a in Resources */,
+				B3700D9C30369F99007D84B4 /* Drum2.m4a in Resources */,
+				B3700D9D30369F99007D84B4 /* Drink4.mp3 in Resources */,
+				B3700D9E30369F99007D84B4 /* Drink3.m4a in Resources */,
+				B3700D9F30369F99007D84B4 /* Drink1.m4a in Resources */,
+				B3700DA030369F99007D84B4 /* Drink2.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

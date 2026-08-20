@@ -8,6 +8,7 @@ struct MainView: View {
     let modelContainer: ModelContainer
 
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var events: [ReminderEvent]
     @Query(sort: \AppSettings.createdAt, order: .forward) private var settingsRows: [AppSettings]
     @State private var settingsLoaded = false
@@ -113,6 +114,18 @@ struct MainView: View {
             }
             settingsLoaded = true
         }
+        .onChange(of: scenePhase) { _, newPhase in
+            // Top up the 64-request pending queue whenever the user
+            // returns to the app. Without this, a 5-minute-interval
+            // schedule (157 slots/day) would run out of registered
+            // notifications after ~5 hours.
+            guard newPhase == .active, isConfigured, let settings else { return }
+            let store = HydrationEventStore(modelContainer: modelContainer)
+            Task {
+                await store.backfillMissed(settings: settings, lookback: .hours(24))
+                NotificationScheduler(modelContainer: modelContainer).reschedule(settings: settings)
+            }
+        }
     }
 
     // MARK: Active (timer) content
@@ -142,7 +155,7 @@ struct MainView: View {
                 .frame(maxWidth: 280)
         } else if let next = nextUpcomingSlot {
             VStack(spacing: 6) {
-                Text("Next Glass")
+                Text("Next Drink")
                     .font(.title3.weight(.medium))
                     .foregroundStyle(.white.opacity(0.75))
                 Text(countdownLabel(to: next))
@@ -238,16 +251,16 @@ struct MainView: View {
 
     private func countdownLabel(to target: Date) -> String {
         let interval = max(0, target.timeIntervalSince(now))
-        if interval < 60 {
-            return "Now"
-        }
-        let minutes = Int(interval) / 60
-        let hours = minutes / 60
-        let mins = minutes % 60
+        let totalSeconds = Int(interval)
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let seconds = totalSeconds % 60
+
         if hours > 0 {
-            return "\(hours)h \(mins)m"
+            return String(format: "%d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            return String(format: "%d:%02d", minutes, seconds)
         }
-        return "\(mins) min"
     }
 
     // MARK: Background
