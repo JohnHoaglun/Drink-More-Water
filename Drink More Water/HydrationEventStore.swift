@@ -20,6 +20,7 @@ final class HydrationEventStore: @unchecked Sendable {
         descriptor.fetchLimit = 1
 
         if let existing = try? context.fetch(descriptor).first {
+            migrateSoundName(context, existing)
             return existing
         }
 
@@ -27,6 +28,30 @@ final class HydrationEventStore: @unchecked Sendable {
         context.insert(settings)
         try? context.save()
         return settings
+    }
+
+    // MARK: - Sound Migration
+
+    /// Converts old .m4a/.mp3 sound names to their .caf equivalents.
+    private func migrateSoundName(_ context: ModelContext, _ settings: AppSettings) {
+        guard !["default", ""].contains(settings.soundName) else { return }
+        
+        let ext = (settings.soundName as NSString).pathExtension
+        guard ext == "m4a" || ext == "mp3" else { return }
+        
+        let baseName = (settings.soundName as NSString).deletingPathExtension
+        let newName = baseName + ".caf"
+        
+        // Check the new file exists in the bundle
+        let url = Bundle.main.url(forResource: newName, withExtension: "")
+        guard url != nil else {
+            settings.soundName = "default"
+            try? context.save()
+            return
+        }
+        
+        settings.soundName = newName
+        try? context.save()
     }
 
     // MARK: Missed backfill

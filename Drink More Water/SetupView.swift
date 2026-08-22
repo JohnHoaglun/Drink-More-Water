@@ -63,13 +63,13 @@ struct SoundOption: Identifiable, Hashable {
 
     static let all: [SoundOption] = [
         SoundOption(id: "default",     label: "Default"),
-        SoundOption(id: "Drink1.m4a",  label: "Drink 1"),
-        SoundOption(id: "Drink2.m4a",  label: "Drink 2"),
-        SoundOption(id: "Drink3.m4a",  label: "Drink 3"),
-        SoundOption(id: "Drink4.mp3",  label: "Drink 4"),
-        SoundOption(id: "Drum1.m4a",   label: "Drum 1"),
-        SoundOption(id: "Drum2.m4a",   label: "Drum 2"),
-        SoundOption(id: "Drum3.m4a",   label: "Drum 3"),
+        SoundOption(id: "Drink1.caf",  label: "Drink 1"),
+        SoundOption(id: "Drink2.caf",  label: "Drink 2"),
+        SoundOption(id: "Drink3.caf",  label: "Drink 3"),
+        SoundOption(id: "Drink4.caf",  label: "Drink 4"),
+        SoundOption(id: "Drum1.caf",   label: "Drum 1"),
+        SoundOption(id: "Drum2.caf",   label: "Drum 2"),
+        SoundOption(id: "Drum3.caf",   label: "Drum 3"),
     ]
 
     static func match(_ id: String) -> SoundOption {
@@ -129,6 +129,42 @@ private struct SetupForm: View {
             previewPlayer = player
         } catch {
             print("Sound preview failed: \(error)")
+        }
+    }
+
+    private func playNotificationSound() {
+        guard settings.isAudible else { return }
+        previewPlayer?.stop()
+        previewPlayer = nil
+
+        let sound = NotificationScheduler.notificationSound(for: selectedSound)
+        print("🔊 [Test] Playing notification sound: \(settings.soundName), selected: \(selectedSound)")
+
+        if sound == .default {
+            print("   → Using system default notification sound")
+            AudioServicesPlaySystemSound(1007)
+            return
+        }
+
+        guard let url = Bundle.main.url(forResource: (selectedSound as NSString).deletingPathExtension,
+                                       withExtension: (selectedSound as NSString).pathExtension) else {
+            print("   → File not found, falling back to default")
+            AudioServicesPlaySystemSound(1007)
+            return
+        }
+
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playAndRecord, mode: .default, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
+            try session.setActive(true)
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.prepareToPlay()
+            player.play()
+            previewPlayer = player
+            print("   → Playing: \(selectedSound) (\(url.path))")
+        } catch {
+            print("   → Error: \(error.localizedDescription)")
+            AudioServicesPlaySystemSound(1007)
         }
     }
 

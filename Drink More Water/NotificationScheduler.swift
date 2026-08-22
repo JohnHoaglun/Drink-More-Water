@@ -97,19 +97,19 @@ struct NotificationScheduler {
         let content = UNMutableNotificationContent()
         content.title = "Time to drink water 💧"
         content.body = "Your next glass is scheduled for \(slot.formatted(date: .omitted, time: .shortened))."
-        if settings.isAudible {
-            content.sound = Self.notificationSound(for: settings.soundName)
+        let isAudible = settings.isAudible
+        let soundName = settings.soundName
+        
+        if isAudible {
+            let sound = Self.notificationSound(for: soundName)
+            content.sound = sound
         } else {
             content.sound = nil
         }
         content.threadIdentifier = Self.categoryID
         content.categoryIdentifier = Self.categoryID
-
-        // Store the sound name so `willPresent` can play it via our
-        // AVAudioPlayer (which we can stop). The system won't play it
-        // in-foreground because we omit `.sound` from presentation options.
         content.userInfo = [
-            "soundName": settings.isAudible ? settings.soundName : ""
+            "soundName": isAudible ? soundName : ""
         ]
 
         let calendar = Calendar.current
@@ -128,11 +128,7 @@ struct NotificationScheduler {
     /// Resolves the notification sound from the stored `soundName`.
     static func notificationSound(for name: String) -> UNNotificationSound {
         guard name != "default" else { return .default }
-        if Bundle.main.url(forResource: (name as NSString).deletingPathExtension,
-                           withExtension: (name as NSString).pathExtension) != nil {
-            return UNNotificationSound(named: UNNotificationSoundName(name))
-        }
-        return .default
+        return UNNotificationSound(named: UNNotificationSoundName(name))
     }
 
     private func registerActions() {

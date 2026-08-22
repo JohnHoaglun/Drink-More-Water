@@ -33,7 +33,7 @@ final class NotificationSoundPlayer: NSObject, @unchecked Sendable {
 
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
+            try session.setCategory(.playAndRecord, mode: .default, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
             try session.setActive(true)
             let p = try AVAudioPlayer(contentsOf: url)
             p.play()
@@ -169,9 +169,7 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @u
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        let soundName = notification.request.content.userInfo["soundName"] as? String ?? "default"
-        NotificationSoundPlayer.shared.play(soundName)
-        return [.banner, .list]
+        return [.banner, .list, .sound]
     }
 
     func userNotificationCenter(
