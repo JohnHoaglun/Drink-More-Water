@@ -85,6 +85,12 @@ struct MainView: View {
             let store = HydrationEventStore(modelContainer: modelContainer)
             if let fetched = store.fetchOrCreateSettings() {
                 if fetched.hasCompletedSetup {
+                    // Only backfill/expire if there are already events
+                    // (not a fresh install — don't fabricate ignored sessions)
+                    guard !events.isEmpty else {
+                        NotificationScheduler(modelContainer: modelContainer).topUp(settings: fetched)
+                        return
+                    }
                     await store.backfillMissed(settings: fetched, lookback: .hours(24))
                     await store.autoIgnoreExpired(settings: fetched, window: answerableWindow)
                     NotificationScheduler(modelContainer: modelContainer).topUp(settings: fetched)
@@ -93,10 +99,10 @@ struct MainView: View {
             settingsLoaded = true
         }
         .onChange(of: scenePhase) { _, newPhase in
-            guard newPhase == .active, isConfigured, let settings else { return }
+            NotificationSoundPlayer.shared.stop()
+            guard newPhase == .active, isConfigured, let settings, !events.isEmpty else { return }
             let store = HydrationEventStore(modelContainer: modelContainer)
             Task {
-                await store.backfillMissed(settings: settings, lookback: .hours(24))
                 await store.autoIgnoreExpired(settings: settings, window: answerableWindow)
                 NotificationScheduler(modelContainer: modelContainer).topUp(settings: settings)
             }

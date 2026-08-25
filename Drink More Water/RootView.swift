@@ -1,11 +1,13 @@
 import SwiftUI
 import SwiftData
+import Combine
 
 /// Host for the app's screens: TabView with Main / Stats / Setup / About,
 /// gated behind the first-run onboarding flow.
 struct RootView: View {
     let modelContainer: ModelContainer
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
@@ -18,6 +20,11 @@ struct RootView: View {
             }
         }
         .modelContainer(modelContainer)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .inactive {
+                NotificationSoundPlayer.shared.stop()
+            }
+        }
     }
 
     private var mainTabs: some View {

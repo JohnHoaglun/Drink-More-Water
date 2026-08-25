@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 import AVFoundation
-import Combine
+import AudioToolbox
 
 /// Spec: "Setup screen" — start/end time, interval, sound, name.
 struct SetupView: View {
@@ -46,8 +46,6 @@ struct SetupView: View {
         showSaved = true
 
         Task {
-            let store = HydrationEventStore(modelContainer: modelContainer)
-            await store.backfillMissed(settings: settings, lookback: .hours(24), forceAll: true)
             NotificationScheduler(modelContainer: modelContainer).reschedule(settings: settings)
         }
     }
@@ -88,85 +86,19 @@ private struct SetupForm: View {
     @State private var invalidRange = false
 
     @State private var selectedSound: String
-    @State private var colorSchemeOverride: String?
-    @State private var colorSchemeSelection: ColorSchemeOption
-
-    /// Reused player so we don't leak AVAudioPlayer instances on rapid taps.
-    @State private var previewPlayer: AVAudioPlayer?
-
-    enum ColorSchemeOption: String, CaseIterable, Identifiable {
-        case system
-        case light
-        case dark
-        var id: String { rawValue }
-        var label: String {
-            switch self {
-            case .system: return "Follow System"
-            case .light:  return "Light"
-            case .dark:   return "Dark"
-            }
-        }
-    }
 
     private func playPreview() {
         guard settings.isAudible else { return }
-        previewPlayer?.stop()
-        previewPlayer = nil
+        NotificationSoundPlayer.shared.stop()
 
         if selectedSound == "default" {
             AudioServicesPlaySystemSound(1007)
             return
         }
 
-        guard let url = Bundle.main.url(forResource: (selectedSound as NSString).deletingPathExtension,
-                                       withExtension: (selectedSound as NSString).pathExtension) else {
-            return
-        }
-        do {
-            let player = try AVAudioPlayer(contentsOf: url)
-            player.prepareToPlay()
-            player.play()
-            previewPlayer = player
-        } catch {
-            print("Sound preview failed: \(error)")
-        }
+        NotificationSoundPlayer.shared.play(selectedSound)
     }
 
-    private func playNotificationSound() {
-        guard settings.isAudible else { return }
-        previewPlayer?.stop()
-        previewPlayer = nil
-
-        let sound = NotificationScheduler.notificationSound(for: selectedSound)
-        print("🔊 [Test] Playing notification sound: \(settings.soundName), selected: \(selectedSound)")
-
-        if sound == .default {
-            print("   → Using system default notification sound")
-            AudioServicesPlaySystemSound(1007)
-            return
-        }
-
-        guard let url = Bundle.main.url(forResource: (selectedSound as NSString).deletingPathExtension,
-                                       withExtension: (selectedSound as NSString).pathExtension) else {
-            print("   → File not found, falling back to default")
-            AudioServicesPlaySystemSound(1007)
-            return
-        }
-
-        do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .default, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
-            try session.setActive(true)
-            let player = try AVAudioPlayer(contentsOf: url)
-            player.prepareToPlay()
-            player.play()
-            previewPlayer = player
-            print("   → Playing: \(selectedSound) (\(url.path))")
-        } catch {
-            print("   → Error: \(error.localizedDescription)")
-            AudioServicesPlaySystemSound(1007)
-        }
-    }
 
     init(settings: AppSettings, onSaved: @escaping () -> Void) {
         self.settings = settings
@@ -179,15 +111,6 @@ private struct SetupForm: View {
             bySettingHour: settings.endHour, minute: settings.endMinute,
             second: 0, of: .now) ?? .now)
         _selectedSound = State(initialValue: settings.soundName)
-        _colorSchemeOverride = State(initialValue: settings.colorSchemeOverride)
-        let initialSelection: ColorSchemeOption = {
-            switch settings.colorSchemeOverride {
-            case "light": return .light
-            case "dark":  return .dark
-            default:      return .system
-            }
-        }()
-        _colorSchemeSelection = State(initialValue: initialSelection)
     }
 
     var body: some View {
@@ -221,15 +144,6 @@ private struct SetupForm: View {
                 }
             }
 
-            Section("Appearance") {
-                Picker("Color Scheme", selection: $colorSchemeSelection) {
-                    ForEach(ColorSchemeOption.allCases) { option in
-                        Text(option.label).tag(option)
-                    }
-                }
-                .pickerStyle(.segmented)
-            }
-
             if invalidRange {
                 Section {
                     Text("The last reminder must be after the first one.")
@@ -260,18 +174,7 @@ private struct SetupForm: View {
         settings.endMinute = end.minute ?? settings.endMinute
 
         settings.soundName = selectedSound
-        switch colorSchemeSelection {
-        case .system: settings.colorSchemeOverride = nil
-        case .light:  settings.colorSchemeOverride = "light"
-        case .dark:   settings.colorSchemeOverride = "dark"
-        }
-        NotificationCenter.default.post(name: .colorSchemeOverrideDidChange, object: nil)
-
         invalidRange = false
         onSaved()
     }
-}
-
-extension Notification.Name {
-    static let colorSchemeOverrideDidChange = Notification.Name("ColorSchemeOverrideDidChange")
 }

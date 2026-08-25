@@ -13,14 +13,13 @@ final class AppSettings {
     var isAudible: Bool
     var soundName: String      // reserved for v2 custom sounds; v1 uses system default
     var personName: String     // display label for stats
-    var colorSchemeOverride: String? // nil = follow system; else "light" or "dark"
     var hasCompletedSetup: Bool // true only after the user saves in Setup
     var createdAt: Date
 
     init(
         startHour: Int = 8, startMinute: Int = 0,
         endHour: Int = 21, endMinute: Int = 0,
-        intervalMinutes: Int = 60,
+        intervalMinutes: Int = 15,
         isAudible: Bool = true,
         soundName: String = "default",
         personName: String = "You"
@@ -34,7 +33,6 @@ final class AppSettings {
         self.isAudible = isAudible
         self.soundName = soundName
         self.personName = personName
-        self.colorSchemeOverride = nil
         self.hasCompletedSetup = false
         self.createdAt = Date()
     }

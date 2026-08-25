@@ -1,6 +1,7 @@
 import Foundation
 import UserNotifications
 import SwiftData
+import UIKit
 
 /// Cancels and re-registers local notifications for upcoming reminder slots.
 struct NotificationScheduler {
@@ -8,6 +9,8 @@ struct NotificationScheduler {
 
     /// iOS enforces a hard cap of 64 pending notification requests per app.
     static let maxPending = 64
+
+    private static var _delegateRetainer: UNUserNotificationCenterDelegate?
 
     private let modelContainer: ModelContainer?
 
@@ -21,11 +24,13 @@ struct NotificationScheduler {
         let settings = await center.notificationSettings()
         guard settings.authorizationStatus == .notDetermined else { return }
         _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
+        Self.installNotificationHandling()
     }
 
     /// Full wipe-and-rebuild. Use ONLY when the schedule has fundamentally
     /// changed (settings saved).
     func reschedule(settings: AppSettings) {
+        Self.installNotificationHandling()
         registerActions()
 
         let center = UNUserNotificationCenter.current()
@@ -54,6 +59,7 @@ struct NotificationScheduler {
     /// Top-up: add only the slots that aren't already pending.
     /// Does NOT wipe existing notifications.
     func topUp(settings: AppSettings) {
+        Self.installNotificationHandling()
         let center = UNUserNotificationCenter.current()
 
         let now = Date()
@@ -97,19 +103,16 @@ struct NotificationScheduler {
         let content = UNMutableNotificationContent()
         content.title = "Time to drink water 💧"
         content.body = "Your next glass is scheduled for \(slot.formatted(date: .omitted, time: .shortened))."
-        let isAudible = settings.isAudible
-        let soundName = settings.soundName
-        
-        if isAudible {
-            let sound = Self.notificationSound(for: soundName)
-            content.sound = sound
-        } else {
-            content.sound = nil
+
+        if settings.isAudible {
+            content.sound = Self.notificationSound(for: settings.soundName)
         }
+
         content.threadIdentifier = Self.categoryID
         content.categoryIdentifier = Self.categoryID
         content.userInfo = [
-            "soundName": isAudible ? soundName : ""
+            "soundName": settings.soundName,
+            "isAudible": settings.isAudible
         ]
 
         let calendar = Calendar.current
@@ -128,7 +131,41 @@ struct NotificationScheduler {
     /// Resolves the notification sound from the stored `soundName`.
     static func notificationSound(for name: String) -> UNNotificationSound {
         guard name != "default" else { return .default }
-        return UNNotificationSound(named: UNNotificationSoundName(name))
+
+        // Normalize the incoming name: allow either base name or full filename.
+        let candidateNames: [String]
+        if name.contains(".") {
+            candidateNames = [name]
+        } else {
+            candidateNames = ["\(name).caf", name]
+        }
+
+        // Search for a matching resource in the main bundle.
+        for candidate in candidateNames {
+            if let _ = Bundle.main.url(forResource: candidate, withExtension: nil) {
+                #if DEBUG
+                print("[NotificationScheduler] Using custom sound: \(candidate)")
+                #endif
+                return UNNotificationSound(named: UNNotificationSoundName(candidate))
+            }
+        }
+
+        // As a final fallback, try common audio extensions just in case.
+        let commonExtensions = ["caf", "aiff", "wav"]
+        for ext in commonExtensions {
+            if let _ = Bundle.main.url(forResource: name, withExtension: ext) {
+                let resolved = "\(name).\(ext)"
+                #if DEBUG
+                print("[NotificationScheduler] Using custom sound: \(resolved)")
+                #endif
+                return UNNotificationSound(named: UNNotificationSoundName(resolved))
+            }
+        }
+
+        #if DEBUG
+        print("[NotificationScheduler] Custom sound not found for name: \(name). Falling back to default.")
+        #endif
+        return .default
     }
 
     private func registerActions() {
@@ -145,5 +182,23 @@ struct NotificationScheduler {
             intentIdentifiers: []
         )
         UNUserNotificationCenter.current().setNotificationCategories([category])
+    }
+
+    /// Installs a foreground presentation delegate so notifications can show banner + sound while app is active.
+    static func installNotificationHandling() {
+        let center = UNUserNotificationCenter.current()
+        // Ensure categories are registered early
+        let scheduler = NotificationScheduler(modelContainer: nil)
+        scheduler.registerActions()
+        if center.delegate == nil {
+            class ForegroundDelegate: NSObject, UNUserNotificationCenterDelegate {
+                func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+                    completionHandler([.banner, .sound])
+                }
+            }
+            let delegate = ForegroundDelegate()
+            center.delegate = delegate
+            Self._delegateRetainer = delegate
+        }
     }
 }

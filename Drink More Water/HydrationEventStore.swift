@@ -121,6 +121,18 @@ final class HydrationEventStore: @unchecked Sendable {
 
     // MARK: Recording responses
 
+    func hasEvents() async -> Bool {
+        guard let modelContainer else { return false }
+        let context = ModelContext(modelContainer)
+        var desc = FetchDescriptor<ReminderEvent>()
+        desc.fetchLimit = 1
+        do {
+            return try context.fetch(desc).first != nil
+        } catch {
+            return false
+        }
+    }
+
     func record(_ event: ReminderEvent) async {
         guard let modelContainer else { return }
         let context = ModelContext(modelContainer)

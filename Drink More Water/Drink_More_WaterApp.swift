@@ -2,7 +2,6 @@ import SwiftUI
 import SwiftData
 import UserNotifications
 import BackgroundTasks
-import Combine
 import AVFoundation
 import AudioToolbox
 
@@ -32,9 +31,6 @@ final class NotificationSoundPlayer: NSObject, @unchecked Sendable {
         }
 
         do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .default, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
-            try session.setActive(true)
             let p = try AVAudioPlayer(contentsOf: url)
             p.play()
             player = p
@@ -46,7 +42,6 @@ final class NotificationSoundPlayer: NSObject, @unchecked Sendable {
     func stop() {
         player?.stop()
         player = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
     var isPlaying: Bool {
@@ -54,46 +49,9 @@ final class NotificationSoundPlayer: NSObject, @unchecked Sendable {
     }
 }
 
-// MARK: - Theme Manager
-@MainActor
-final class ThemeManager: ObservableObject {
-    @Published var activeScheme: ColorScheme? = nil
-
-    func update(from settings: AppSettings?) {
-        switch settings?.colorSchemeOverride {
-        case "light": activeScheme = .light
-        case "dark":  activeScheme = .dark
-        default:      activeScheme = nil
-        }
-    }
-
-    /// Accepts a raw override string so callers from non-isolated
-    /// (e.g. @Sendable) contexts can pass a Sendable value instead
-    /// of the non-Sendable AppSettings model.
-    func update(override: String?) {
-        switch override {
-        case "light": activeScheme = .light
-        case "dark":  activeScheme = .dark
-        default:      activeScheme = nil
-        }
-    }
-}
-
-private struct ThemeManagerKey: EnvironmentKey {
-    static let defaultValue: ThemeManager = .init()
-}
-extension EnvironmentValues {
-    var themeManager: ThemeManager {
-        get { self[ThemeManagerKey.self] }
-        set { self[ThemeManagerKey.self] = newValue }
-    }
-}
-
 @main
 struct Drink_More_WaterApp: App {
     private let modelContainer: ModelContainer
-    private let themeManager = ThemeManager()
-    private let colorSchemeObserver: NSObjectProtocol
 
     init() {
         let container: ModelContainer
@@ -123,38 +81,15 @@ struct Drink_More_WaterApp: App {
             AppBackground.refresh(task: bgTask)
         }
 
-        let context = ModelContext(container)
-        if let settings = try? context.fetch(FetchDescriptor<AppSettings>()).first {
-            themeManager.update(from: settings)
-        }
-
         Task { @MainActor in
             await NotificationScheduler.requestAuthorization()
-        }
-
-        let mc = container
-        let tm = themeManager
-        colorSchemeObserver = NotificationCenter.default.addObserver(
-            forName: .colorSchemeOverrideDidChange,
-            object: nil,
-            queue: .main
-        ) { _ in
-            // Extract only the Sendable String? — not the non-Sendable
-            // AppSettings model — so we can cross into the @MainActor Task.
-            let ctx = ModelContext(mc)
-            let override: String? = (try? ctx.fetch(FetchDescriptor<AppSettings>()).first)?.colorSchemeOverride
-            Task { @MainActor in
-                tm.update(override: override)
-            }
         }
     }
 
     var body: some Scene {
         WindowGroup {
             RootView(modelContainer: modelContainer)
-                .preferredColorScheme(themeManager.activeScheme)
                 .modelContainer(modelContainer)
-                .environment(\.themeManager, themeManager)
         }
     }
 }
@@ -169,7 +104,7 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @u
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        return [.banner, .list, .sound]
+        return [.banner, .sound]
     }
 
     func userNotificationCenter(
@@ -187,10 +122,14 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @u
         case NotificationActions.ignore: .ignore
         default: nil
         }
+        guard let responseToRecord else { return }
 
-        await store.backfillMissed(settings: settings, lookback: .hours(24))
-        if let responseToRecord,
-           let slot = SchedulingCalculator.slotTime(from: response.notification.request.identifier) {
+        // Only backfill missed if there's existing history (not a fresh install)
+        if await store.hasEvents() {
+            await store.backfillMissed(settings: settings, lookback: .hours(24))
+        }
+
+        if let slot = SchedulingCalculator.slotTime(from: response.notification.request.identifier) {
             await store.record(.init(scheduledAt: slot, response: responseToRecord,
                                      personName: settings.personName))
         }
@@ -210,7 +149,9 @@ enum AppBackground {
                 let store = HydrationEventStore(modelContainer: container)
 
                 if let settings = store.fetchOrCreateSettings() {
-                    await store.backfillMissed(settings: settings, lookback: .hours(24))
+                    if await store.hasEvents() {
+                        await store.backfillMissed(settings: settings, lookback: .hours(24))
+                    }
                     NotificationScheduler(modelContainer: container).topUp(settings: settings)
                 }
             } catch {
