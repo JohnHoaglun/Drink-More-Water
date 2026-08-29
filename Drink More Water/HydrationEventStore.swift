@@ -77,12 +77,16 @@ final class HydrationEventStore: @unchecked Sendable {
         let searchStart = lookbackStart
         guard searchStart < expiredBefore else { return }
 
-        let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= searchStart && $0.scheduledAt < expiredBefore }
+        let start = searchStart
+        let end = expiredBefore
+        let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= start && $0.scheduledAt < end }
         let existing = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
         let recordedSlots = Set(existing.map { $0.scheduledAt })
 
-        for slot in SchedulingCalculator.slots(from: searchStart, to: expiredBefore, settings: settings)
-        where !recordedSlots.contains(slot) {
+        for slot in SchedulingCalculator.slots(from: searchStart, to: expiredBefore, settings: settings) {
+            if recordedSlots.contains(slot) {
+                continue
+            }
             context.insert(ReminderEvent(scheduledAt: slot, response: .missed,
                                          personName: settings.personName))
         }
@@ -105,12 +109,16 @@ final class HydrationEventStore: @unchecked Sendable {
         let cutoff = now.addingTimeInterval(-window)
         let lookback = now.addingTimeInterval(-seconds(from: .hours(1)))
 
-        let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= lookback && $0.scheduledAt < cutoff }
+        let start = lookback
+        let end = cutoff
+        let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= start && $0.scheduledAt < end }
         let recent = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
         let recordedSlots = Set(recent.map { $0.scheduledAt })
 
-        for slot in SchedulingCalculator.slots(from: lookback, to: cutoff, settings: settings)
-        where !recordedSlots.contains(slot) {
+        for slot in SchedulingCalculator.slots(from: lookback, to: cutoff, settings: settings) {
+            if recordedSlots.contains(slot) {
+                continue
+            }
             context.insert(ReminderEvent(scheduledAt: slot, response: .ignore,
                                          personName: settings.personName))
         }
@@ -136,6 +144,15 @@ final class HydrationEventStore: @unchecked Sendable {
     func record(_ event: ReminderEvent) async {
         guard let modelContainer else { return }
         let context = ModelContext(modelContainer)
+        
+        // Check for duplicate ReminderEvent with same scheduledAt
+        let scheduledAt = event.scheduledAt
+        let predicate = #Predicate<ReminderEvent> { $0.scheduledAt == scheduledAt }
+        let existing = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
+        if !existing.isEmpty {
+            return
+        }
+        
         context.insert(event)
         try? context.save()
         await Task.yield()

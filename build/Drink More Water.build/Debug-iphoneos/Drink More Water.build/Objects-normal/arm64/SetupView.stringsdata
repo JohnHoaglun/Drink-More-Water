@@ -1,0 +1,144 @@
+{
+  "source": "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/SetupView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Setup",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "Schedule updated",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Loading…",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "Schedule",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 164
+        }
+      },
+      {
+        "comment": "",
+        "key": "Alerts",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 176
+        }
+      },
+      {
+        "comment": "",
+        "key": "Appearance",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 189
+        }
+      },
+      {
+        "comment": "",
+        "key": "Display name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "First reminder",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "Last reminder",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 168
+        }
+      },
+      {
+        "comment": "",
+        "key": "Every %lld minutes",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "Audible alerts",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 177
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tone",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "Color Scheme",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 190
+        }
+      },
+      {
+        "comment": "",
+        "key": "The last reminder must be after the first one.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 200
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 208
+        }
+      }
+    ]
+  },
+  "version": 1
+}

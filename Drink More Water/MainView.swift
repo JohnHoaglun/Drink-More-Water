@@ -26,21 +26,55 @@ struct MainView: View {
 
     // MARK: Slot logic
 
+    /// All slot times must match the scheduled notification time (+2 min shift) to keep the app state in sync with notifications.
+    private func notificationAdjustedSlots(for date: Date, settings: AppSettings) -> [Date] {
+        let rawSlots = SchedulingCalculator.slots(on: date, settings: settings)
+        let shiftedSlots = rawSlots.map { slot in
+            // Add 2 minutes shift to match notification schedule
+            let shifted = slot.addingTimeInterval(120)
+            // Zero out seconds to match notification scheduling
+            let comps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: shifted)
+            return calendar.date(from: comps)!
+        }
+        return shiftedSlots
+    }
+
+    private func datesAreClose(_ lhs: Date, _ rhs: Date, toleranceSeconds: TimeInterval = 2) -> Bool {
+        abs(lhs.timeIntervalSince(rhs)) <= toleranceSeconds
+    }
+
+    private func containsDate(_ set: Set<Date>, date: Date, toleranceSeconds: TimeInterval = 2) -> Bool {
+        set.contains(where: { datesAreClose($0, date, toleranceSeconds: toleranceSeconds) })
+    }
+
     private var activeSlot: Date? {
         guard let settings else { return nil }
-        let slots = SchedulingCalculator.slots(on: calendar.startOfDay(for: now), settings: settings)
-        let recorded = Set(events.map { $0.scheduledAt })
-        let open = slots.filter { !recorded.contains($0) }
+        let startOfDay = calendar.startOfDay(for: now)
+        let slots = notificationAdjustedSlots(for: startOfDay, settings: settings)
+
+        let recorded = Set(events.map { event -> Date in
+            let shifted = event.scheduledAt.addingTimeInterval(120)
+            let comps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: shifted)
+            return calendar.date(from: comps)!
+        })
+
+        let open = slots.filter { slot in
+            !containsDate(recorded, date: slot)
+        }
 
         if let overdue = open.last(where: { $0 < now && now.timeIntervalSince($0) < answerableWindow }) {
             return overdue
         }
-        return open.first(where: { $0 >= now })
+        if let next = open.first(where: { $0 >= now }) {
+            return next
+        }
+        return nil
     }
 
     private var withinWindow: Bool {
         guard let settings else { return false }
-        let slots = SchedulingCalculator.slots(on: calendar.startOfDay(for: now), settings: settings)
+        let startOfDay = calendar.startOfDay(for: now)
+        let slots = notificationAdjustedSlots(for: startOfDay, settings: settings)
         guard let first = slots.first, let last = slots.last else { return false }
         return now >= first && now <= last
     }
@@ -52,15 +86,23 @@ struct MainView: View {
 
     private var nextUpcomingSlot: Date? {
         guard let settings else { return nil }
-        let slots = SchedulingCalculator.slots(on: calendar.startOfDay(for: now), settings: settings)
-        let recorded = Set(events.map { $0.scheduledAt })
-        return slots.first { $0 >= now && !recorded.contains($0) }
+        let startOfDay = calendar.startOfDay(for: now)
+        let slots = notificationAdjustedSlots(for: startOfDay, settings: settings)
+        let recorded = Set(events.map { event -> Date in
+            let shifted = event.scheduledAt.addingTimeInterval(120)
+            let comps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: shifted)
+            return calendar.date(from: comps)!
+        })
+        return slots.first { slot in
+            slot >= now && !containsDate(recorded, date: slot)
+        }
     }
 
     private var nextTomorrowSlot: Date? {
         guard let settings else { return nil }
         let tomorrow = calendar.startOfDay(for: now.addingTimeInterval(86400))
-        return SchedulingCalculator.slots(on: tomorrow, settings: settings).first
+        let slots = notificationAdjustedSlots(for: tomorrow, settings: settings)
+        return slots.first
     }
 
     // MARK: Body
@@ -84,16 +126,16 @@ struct MainView: View {
         .task {
             let store = HydrationEventStore(modelContainer: modelContainer)
             if let fetched = store.fetchOrCreateSettings() {
-                if fetched.hasCompletedSetup {
-                    // Only backfill/expire if there are already events
-                    // (not a fresh install — don't fabricate ignored sessions)
-                    guard !events.isEmpty else {
+                if !events.isEmpty {
+                    if fetched.hasCompletedSetup {
+                        await store.backfillMissed(settings: fetched, lookback: .hours(24))
+                        await store.autoIgnoreExpired(settings: fetched, window: answerableWindow)
                         NotificationScheduler(modelContainer: modelContainer).topUp(settings: fetched)
-                        return
                     }
-                    await store.backfillMissed(settings: fetched, lookback: .hours(24))
-                    await store.autoIgnoreExpired(settings: fetched, window: answerableWindow)
+                } else {
                     NotificationScheduler(modelContainer: modelContainer).topUp(settings: fetched)
+                    settingsLoaded = true
+                    return
                 }
             }
             settingsLoaded = true
@@ -112,7 +154,7 @@ struct MainView: View {
     // MARK: Active (timer) content
 
     private var activeContent: some View {
-        VStack(spacing: 24) {
+        return VStack(spacing: 24) {
             statusDisplay
 
             Spacer()
@@ -228,7 +270,14 @@ struct MainView: View {
         guard let settings, let slot = activeSlot else { return }
         let store = HydrationEventStore(modelContainer: modelContainer)
         let event = ReminderEvent(scheduledAt: slot, response: type, personName: settings.personName)
-        Task { await store.record(event) }
+        Task {
+            await store.record(event)
+            // Trigger a refresh by toggling settingsLoaded
+            DispatchQueue.main.async {
+                settingsLoaded = false
+                settingsLoaded = true
+            }
+        }
     }
 
     // MARK: Formatting
@@ -259,3 +308,4 @@ struct MainView: View {
             .ignoresSafeArea()
     }
 }
+

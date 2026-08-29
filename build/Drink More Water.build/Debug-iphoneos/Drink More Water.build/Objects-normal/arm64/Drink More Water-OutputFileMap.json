@@ -1,0 +1,229 @@
+{
+  "" : {
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink More Water-primary.dia",
+    "emit-module-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink More Water-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink More Water-primary-emit-module.dia",
+    "pch" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink More Water-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink More Water-primary.swiftdeps"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/AboutView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/AppSettings.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/AppearanceController.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/CSVExporter.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/Constants.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/ContentView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/Drink_More_WaterApp.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Drink_More_WaterApp~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/Duration+Extensions.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Duration+Extensions~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/HydrationEventStore.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/HydrationEventStore~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/Log.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Log~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/MainView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/MainView~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/NotificationActions.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationActions~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/NotificationScheduler.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/NotificationScheduler~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/OnboardingView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/OnboardingView~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/ReminderEvent.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReminderEvent~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/ReportingView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ReportingView~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/ResponseType.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ResponseType~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/RootView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/RootView~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/SchedulingCalculator.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SchedulingCalculator~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/SetupView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/SetupView~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/StatsAggregator.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/StatsAggregator~partial.swiftmodule"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

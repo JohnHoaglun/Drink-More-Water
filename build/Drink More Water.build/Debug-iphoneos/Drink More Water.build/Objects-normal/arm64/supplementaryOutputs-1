@@ -1,0 +1,23 @@
+{
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/AboutView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.dia",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AboutView.swiftdeps"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/AppSettings.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.dia",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppSettings.swiftdeps"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/AppearanceController.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.dia",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/AppearanceController.swiftdeps"
+  }
+}
