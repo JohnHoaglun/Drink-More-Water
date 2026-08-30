@@ -27,6 +27,7 @@ final class HydrationEventStore: @unchecked Sendable {
         let settings = AppSettings()
         context.insert(settings)
         try? context.save()
+        Log.info("Created new AppSettings (first launch)", category: .settings)
         return settings
     }
 
@@ -35,21 +36,22 @@ final class HydrationEventStore: @unchecked Sendable {
     /// Converts old .m4a/.mp3 sound names to their .caf equivalents.
     private func migrateSoundName(_ context: ModelContext, _ settings: AppSettings) {
         guard !["default", ""].contains(settings.soundName) else { return }
-        
+
         let ext = (settings.soundName as NSString).pathExtension
         guard ext == "m4a" || ext == "mp3" else { return }
-        
+
         let baseName = (settings.soundName as NSString).deletingPathExtension
-        let newName = baseName + ".caf"
-        
-        // Check the new file exists in the bundle
+        let newName  = baseName + ".caf"
+
         let url = Bundle.main.url(forResource: newName, withExtension: "")
         guard url != nil else {
+            Log.warn("Sound migration: '\(settings.soundName)' → no .caf found, resetting to default", category: .settings)
             settings.soundName = "default"
             try? context.save()
             return
         }
-        
+
+        Log.info("Sound migration: '\(settings.soundName)' → '\(newName)'", category: .settings)
         settings.soundName = newName
         try? context.save()
     }
@@ -57,12 +59,6 @@ final class HydrationEventStore: @unchecked Sendable {
     // MARK: Missed backfill
 
     /// Marks unrecorded past slots as `.missed`.
-    ///
-    /// - Parameters:
-    ///   - settings: the active schedule.
-    ///   - lookback: how far back to search (e.g. 24 h).
-    ///   - forceAll: when `true`, every slot before *now* is treated as
-    ///     expired (not just those older than one interval).
     func backfillMissed(settings: AppSettings, lookback: Duration, forceAll: Bool = false) async {
         guard let modelContainer else { return }
         let context = ModelContext(modelContainer)
@@ -78,17 +74,20 @@ final class HydrationEventStore: @unchecked Sendable {
         guard searchStart < expiredBefore else { return }
 
         let start = searchStart
-        let end = expiredBefore
+        let end   = expiredBefore
         let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= start && $0.scheduledAt < end }
         let existing = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
         let recordedSlots = Set(existing.map { $0.scheduledAt })
 
+        var missedCount = 0
         for slot in SchedulingCalculator.slots(from: searchStart, to: expiredBefore, settings: settings) {
-            if recordedSlots.contains(slot) {
-                continue
-            }
-            context.insert(ReminderEvent(scheduledAt: slot, response: .missed,
-                                         personName: settings.personName))
+            if recordedSlots.contains(slot) { continue }
+            context.insert(ReminderEvent(scheduledAt: slot, response: .missed, personName: settings.personName))
+            missedCount += 1
+        }
+
+        if missedCount > 0 {
+            Log.info("Backfilled \(missedCount) missed slot(s) in [lookback=\(Int(seconds(from: lookback)))s]", category: .event)
         }
 
         try? context.save()
@@ -97,30 +96,36 @@ final class HydrationEventStore: @unchecked Sendable {
 
     // MARK: Auto-ignore expired slots
 
-    /// Records unresponded slots that are older than `window` seconds
-    /// as `.ignore`. This is the 90-second expiry: if the user didn't
-    /// tap Drink or Ignore (on the notification or in-app) within the
-    /// window, the slot is counted as ignored and buttons disappear.
+    /// Records unresponded slots older than `window` seconds as `.ignore`.
+    /// This is the 2-minute expiry: if the user didn't tap within the window,
+    /// the slot is counted as ignored and buttons disappear.
     func autoIgnoreExpired(settings: AppSettings, window: TimeInterval) async {
         guard let modelContainer else { return }
         let context = ModelContext(modelContainer)
 
-        let now = Date()
-        let cutoff = now.addingTimeInterval(-window)
+        let now     = Date()
+        let cutoff  = now.addingTimeInterval(-window)
         let lookback = now.addingTimeInterval(-seconds(from: .hours(1)))
 
         let start = lookback
-        let end = cutoff
+        let end   = cutoff
         let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= start && $0.scheduledAt < end }
         let recent = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
         let recordedSlots = Set(recent.map { $0.scheduledAt })
 
+        var ignoredCount = 0
         for slot in SchedulingCalculator.slots(from: lookback, to: cutoff, settings: settings) {
-            if recordedSlots.contains(slot) {
-                continue
-            }
-            context.insert(ReminderEvent(scheduledAt: slot, response: .ignore,
-                                         personName: settings.personName))
+            if recordedSlots.contains(slot) { continue }
+            Log.info(
+                "Auto-ignoring expired slot: \(slot.formatted(date: .omitted, time: .standard)) (older than \(Int(window))s window)",
+                category: .event
+            )
+            context.insert(ReminderEvent(scheduledAt: slot, response: .ignore, personName: settings.personName))
+            ignoredCount += 1
+        }
+
+        if ignoredCount > 0 {
+            Log.info("Auto-ignored \(ignoredCount) expired slot(s)", category: .event)
         }
 
         try? context.save()
@@ -144,15 +149,16 @@ final class HydrationEventStore: @unchecked Sendable {
     func record(_ event: ReminderEvent) async {
         guard let modelContainer else { return }
         let context = ModelContext(modelContainer)
-        
-        // Check for duplicate ReminderEvent with same scheduledAt
+
         let scheduledAt = event.scheduledAt
         let predicate = #Predicate<ReminderEvent> { $0.scheduledAt == scheduledAt }
         let existing = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
         if !existing.isEmpty {
+            Log.debug("Duplicate event ignored: slot=\(scheduledAt.formatted(date: .omitted, time: .standard)), response=\(event.response)", category: .event)
             return
         }
-        
+
+        Log.info("Recording event: slot=\(scheduledAt.formatted(date: .omitted, time: .standard)), response=\(event.response), person=\(event.personName)", category: .event)
         context.insert(event)
         try? context.save()
         await Task.yield()
@@ -166,6 +172,7 @@ final class HydrationEventStore: @unchecked Sendable {
         let all = (try? context.fetch(FetchDescriptor<ReminderEvent>())) ?? []
         all.forEach { context.delete($0) }
         try? context.save()
+        Log.info("Cleared all history (\(all.count) records)", category: .event)
         await Task.yield()
     }
 

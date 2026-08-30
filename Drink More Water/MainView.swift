@@ -15,14 +15,17 @@ struct MainView: View {
     @State private var now: Date = .now
     @Environment(\.colorScheme) private var colorScheme
 
+    // Tracks when the current slot became actionable, for timing/logging.
+    @State private var isDueSince: Date? = nil
+
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private var calendar: Calendar { Calendar.current }
 
     private var settings: AppSettings? { settingsRows.first }
     private var isConfigured: Bool { settings?.hasCompletedSetup ?? false }
 
-    /// A slot is answerable for 90 seconds after it fires.
-    private let answerableWindow: TimeInterval = 90
+    /// Buttons stay visible for 2 minutes after a slot fires.
+    private let answerableWindow: TimeInterval = 120
 
     // MARK: Slot logic
 
@@ -30,9 +33,7 @@ struct MainView: View {
     private func notificationAdjustedSlots(for date: Date, settings: AppSettings) -> [Date] {
         let rawSlots = SchedulingCalculator.slots(on: date, settings: settings)
         let shiftedSlots = rawSlots.map { slot in
-            // Add 2 minutes shift to match notification schedule
             let shifted = slot.addingTimeInterval(120)
-            // Zero out seconds to match notification scheduling
             let comps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: shifted)
             return calendar.date(from: comps)!
         }
@@ -123,6 +124,24 @@ struct MainView: View {
         .onReceive(ticker) { date in
             now = date
         }
+        .onChange(of: isDue) { _, newValue in
+            if newValue {
+                isDueSince = Date()
+                Log.info(
+                    "Slot became actionable — showing Drink/Ignore buttons. slot=\(activeSlot?.formatted(date: .omitted, time: .standard) ?? "unknown")",
+                    category: .ui
+                )
+            } else {
+                if let since = isDueSince {
+                    let duration = Date().timeIntervalSince(since)
+                    Log.info(
+                        "Slot no longer due — buttons hidden after \(String(format: "%.1f", duration))s",
+                        category: .ui
+                    )
+                }
+                isDueSince = nil
+            }
+        }
         .task {
             let store = HydrationEventStore(modelContainer: modelContainer)
             if let fetched = store.fetchOrCreateSettings() {
@@ -142,6 +161,7 @@ struct MainView: View {
         }
         .onChange(of: scenePhase) { _, newPhase in
             NotificationSoundPlayer.shared.stop()
+            Log.info("Scene phase changed to: \(newPhase)", category: .app)
             guard newPhase == .active, isConfigured, let settings, !events.isEmpty else { return }
             let store = HydrationEventStore(modelContainer: modelContainer)
             Task {
@@ -264,15 +284,29 @@ struct MainView: View {
     // MARK: Actions
 
     private func respond(_ type: ResponseType) {
-        // Stop any playing notification audio immediately.
         NotificationSoundPlayer.shared.stop()
 
-        guard let settings, let slot = activeSlot else { return }
+        guard let settings, let slot = activeSlot else {
+            Log.warn("respond() called but no active slot or settings available", category: .interaction)
+            return
+        }
+
+        let latencyStr: String
+        if let since = isDueSince {
+            latencyStr = String(format: "%.1f", Date().timeIntervalSince(since)) + "s"
+        } else {
+            latencyStr = "unknown"
+        }
+
+        Log.info(
+            "User responded: \(type) — slot=\(slot.formatted(date: .omitted, time: .standard)), timeVisible=\(latencyStr)",
+            category: .interaction
+        )
+
         let store = HydrationEventStore(modelContainer: modelContainer)
         let event = ReminderEvent(scheduledAt: slot, response: type, personName: settings.personName)
         Task {
             await store.record(event)
-            // Trigger a refresh by toggling settingsLoaded
             DispatchQueue.main.async {
                 settingsLoaded = false
                 settingsLoaded = true
@@ -308,4 +342,3 @@ struct MainView: View {
             .ignoresSafeArea()
     }
 }
-

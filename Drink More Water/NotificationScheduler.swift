@@ -1,11 +1,4 @@
 // NotificationScheduler.swift
-//
-// NOTE FOR FUTURE MAINTAINERS:
-// This file implements notification scheduling with a new policy:
-// - All notification slots are staggered by adding +2 minutes to their original times,
-//   to avoid simultaneous firing.
-// - Each notification's threadIdentifier is unique per slot (categoryID + "." + identifier)
-//   to ensure notifications are visually separate and not grouped together.
 
 import Foundation
 import UserNotifications
@@ -31,14 +24,18 @@ struct NotificationScheduler {
     static func requestAuthorization() async {
         let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
-        guard settings.authorizationStatus == .notDetermined else { return }
-        _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
+        guard settings.authorizationStatus == .notDetermined else {
+            Log.info("Notification auth status: \(settings.authorizationStatus.rawValue)", category: .notification)
+            return
+        }
+        let granted = (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) ?? false
+        Log.info("Notification authorization requested — granted: \(granted)", category: .notification)
         Self.installNotificationHandling()
     }
 
-    /// Full wipe-and-rebuild. Use ONLY when the schedule has fundamentally
-    /// changed (settings saved).
+    /// Full wipe-and-rebuild. Use ONLY when the schedule has fundamentally changed (settings saved).
     func reschedule(settings: AppSettings) {
+        Log.info("Reschedule: full wipe-and-rebuild (sound=\(settings.soundName), audible=\(settings.isAudible))", category: .scheduler)
         Self.installNotificationHandling()
         registerActions()
 
@@ -51,12 +48,9 @@ struct NotificationScheduler {
         var recordedSlots: Set<Date> = []
         if let modelContainer {
             let context = ModelContext(modelContainer)
-            // Normalize 'now' by zeroing seconds for consistent predicate and to ensure correct DB matching.
-            // IMPORTANT: All normalization for queries must happen OUTSIDE the predicate macros.
             let normalizedNow = Calendar.current.date(bySetting: .second, value: 0, of: now) ?? now
             let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= normalizedNow }
             let future = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
-            // Always zero seconds for slot consistency and correct DB matching.
             recordedSlots = Set(future.map {
                 Calendar.current.date(bySetting: .second, value: 0, of: $0.scheduledAt) ?? $0.scheduledAt
             })
@@ -71,11 +65,12 @@ struct NotificationScheduler {
             center.add(buildRequest(for: slot, settings: settings))
             added += 1
         }
+        Log.info("Reschedule complete: scheduled \(added) notification(s) over next 24h", category: .scheduler)
     }
 
-    /// Top-up: add only the slots that aren't already pending.
-    /// Does NOT wipe existing notifications.
+    /// Top-up: add only the slots that aren't already pending. Does NOT wipe existing notifications.
     func topUp(settings: AppSettings) {
+        Log.debug("TopUp: checking for missing notification slots", category: .scheduler)
         Self.installNotificationHandling()
         let center = UNUserNotificationCenter.current()
 
@@ -85,12 +80,9 @@ struct NotificationScheduler {
         var recordedSlots: Set<Date> = []
         if let modelContainer {
             let context = ModelContext(modelContainer)
-            // Normalize 'now' by zeroing seconds for consistent predicate and to ensure correct DB matching.
-            // IMPORTANT: All normalization for queries must happen OUTSIDE the predicate macros.
             let normalizedNow = Calendar.current.date(bySetting: .second, value: 0, of: now) ?? now
             let predicate = #Predicate<ReminderEvent> { $0.scheduledAt >= normalizedNow }
             let future = (try? context.fetch(FetchDescriptor<ReminderEvent>(predicate: predicate))) ?? []
-            // Always zero seconds for slot consistency and correct DB matching.
             recordedSlots = Set(future.map {
                 Calendar.current.date(bySetting: .second, value: 0, of: $0.scheduledAt) ?? $0.scheduledAt
             })
@@ -113,6 +105,7 @@ struct NotificationScheduler {
         }
         semaphore.wait()
 
+        var added = 0
         for slot in SchedulingCalculator.slots(from: now, to: horizon, settings: settings).map({
             Calendar.current.date(bySetting: .second, value: 0, of: $0.addingTimeInterval(120)) ?? $0.addingTimeInterval(120)
         })
@@ -121,32 +114,40 @@ struct NotificationScheduler {
             guard candidateSlots.contains(id) else { continue }
             guard !alreadyPending.contains(id) else { continue }
             center.add(buildRequest(for: slot, settings: settings))
+            added += 1
         }
+
+        Log.debug("TopUp complete: added \(added) notification(s), \(alreadyPending.count) already pending", category: .scheduler)
     }
 
     // MARK: -
 
     /// Builds a `UNNotificationRequest` for a given slot.
     private func buildRequest(for slot: Date, settings: AppSettings) -> UNNotificationRequest {
-        // Zero out seconds to ensure trigger fires exactly on the minute.
-        // This is important for consistency and to prevent subtle timing issues that may cause
-        // notifications to not fire or to group improperly.
         let preciseSlot = Calendar.current.date(bySetting: .second, value: 0, of: slot) ?? slot
 
         let content = UNMutableNotificationContent()
         content.title = "Time to drink water 💧"
         content.body = "Your next glass is scheduled for \(preciseSlot.formatted(date: .omitted, time: .shortened))."
 
-        // Temporarily force .default sound to guarantee sound plays reliably on all devices.
-        // This overrides any custom sound until the reliability issues are resolved.
-        content.sound = .default
+        // Use the user's chosen custom sound (or nil when not audible).
+        // Background/locked-screen delivery plays content.sound via the OS.
+        // Foreground delivery is handled by NotificationSoundPlayer in willPresent.
+        if settings.isAudible {
+            let sound = Self.notificationSound(for: settings.soundName)
+            content.sound = sound
+            Log.info("buildRequest slot=\(preciseSlot.formatted(date: .omitted, time: .shortened)) sound=\(settings.soundName)", category: .sound)
+        } else {
+            content.sound = nil
+            Log.info("buildRequest slot=\(preciseSlot.formatted(date: .omitted, time: .shortened)) sound=none (isAudible=false)", category: .sound)
+        }
 
-        // Use unique threadIdentifier to avoid grouping multiple notifications together.
         content.threadIdentifier = Self.categoryID + "." + SchedulingCalculator.identifier(for: preciseSlot)
         content.categoryIdentifier = Self.categoryID
         content.userInfo = [
             "soundName": settings.soundName,
-            "isAudible": settings.isAudible
+            "isAudible": settings.isAudible,
+            "scheduledAt": preciseSlot.timeIntervalSince1970
         ]
 
         let calendar = Calendar.current
@@ -166,7 +167,6 @@ struct NotificationScheduler {
     static func notificationSound(for name: String) -> UNNotificationSound {
         guard name != "default" else { return .default }
 
-        // Normalize the incoming name: allow either base name or full filename.
         let candidateNames: [String]
         if name.contains(".") {
             candidateNames = [name]
@@ -174,34 +174,23 @@ struct NotificationScheduler {
             candidateNames = ["\(name).caf", name]
         }
 
-        // Search for a matching resource in the main bundle.
         for candidate in candidateNames {
-            if let _ = Bundle.main.url(forResource: candidate, withExtension: nil) {
-                #if DEBUG
-                print("[NotificationScheduler] Using custom sound: \(candidate)")
-                #endif
+            if Bundle.main.url(forResource: candidate, withExtension: nil) != nil {
+                Log.debug("Resolved notification sound: \(candidate)", category: .sound)
                 return UNNotificationSound(named: UNNotificationSoundName(candidate))
             }
         }
 
-        // As a final fallback, try common audio extensions just in case.
         let commonExtensions = ["caf", "aiff", "wav"]
         for ext in commonExtensions {
-            if let _ = Bundle.main.url(forResource: name, withExtension: ext) {
+            if Bundle.main.url(forResource: name, withExtension: ext) != nil {
                 let resolved = "\(name).\(ext)"
-                #if DEBUG
-                print("[NotificationScheduler] Using custom sound: \(resolved)")
-                #endif
+                Log.debug("Resolved notification sound (by extension): \(resolved)", category: .sound)
                 return UNNotificationSound(named: UNNotificationSoundName(resolved))
             }
         }
 
-        // IMPORTANT:
-        // We only return a custom sound if it actually exists in the bundle.
-        // If no matching resource is found, fallback strictly to the default sound.
-        #if DEBUG
-        print("[NotificationScheduler] Custom sound not found for name: \(name). Falling back to default.")
-        #endif
+        Log.warn("Custom sound not found in bundle: '\(name)' — falling back to default", category: .sound)
         return .default
     }
 
@@ -219,12 +208,12 @@ struct NotificationScheduler {
             intentIdentifiers: []
         )
         UNUserNotificationCenter.current().setNotificationCategories([category])
+        Log.debug("Notification category '\(Self.categoryID)' registered with drink/ignore actions", category: .notification)
     }
 
     /// Installs a foreground presentation delegate so notifications can show banner + sound while app is active.
     static func installNotificationHandling() {
         let center = UNUserNotificationCenter.current()
-        // Ensure categories are registered early
         let scheduler = NotificationScheduler(modelContainer: nil)
         scheduler.registerActions()
         if center.delegate == nil {
@@ -236,7 +225,7 @@ struct NotificationScheduler {
             let delegate = ForegroundDelegate()
             center.delegate = delegate
             Self._delegateRetainer = delegate
+            Log.info("Installed fallback ForegroundDelegate", category: .notification)
         }
     }
 }
-
