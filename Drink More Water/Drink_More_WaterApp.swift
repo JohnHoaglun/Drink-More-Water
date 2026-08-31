@@ -60,15 +60,23 @@ struct Drink_More_WaterApp: App {
     private let modelContainer: ModelContainer
 
     init() {
+        Log.setup()
+
+        // cloudKitDatabase: .none prevents SwiftData from automatically enabling CloudKit
+        // sync when iCloud container entitlements are present. We use iCloud only for
+        // the log file (iCloud Documents), not for data sync.
+        let storeConfig = ModelConfiguration(cloudKitDatabase: .none)
         let container: ModelContainer
         do {
-            container = try ModelContainer(for: ReminderEvent.self, AppSettings.self)
+            container = try ModelContainer(for: ReminderEvent.self, AppSettings.self,
+                                           configurations: storeConfig)
         } catch {
-            let storeURL = ModelConfiguration().url
+            let storeURL = storeConfig.url
             try? FileManager.default.removeItem(at: storeURL)
             try? FileManager.default.removeItem(at: storeURL.deletingPathExtension())
             do {
-                container = try ModelContainer(for: ReminderEvent.self, AppSettings.self)
+                container = try ModelContainer(for: ReminderEvent.self, AppSettings.self,
+                                               configurations: storeConfig)
             } catch {
                 Log.error("SwiftData store recovery failed: \(error)")
                 fatalError("Cannot load SwiftData store after recovery attempt.")
@@ -91,7 +99,7 @@ struct Drink_More_WaterApp: App {
             await NotificationScheduler.requestAuthorization()
         }
 
-        Log.info("App launched — modelContainer ready", category: .app)
+        Log.info("App launched — \(Constants.buildTag) — modelContainer ready", category: .app)
     }
 
     var body: some Scene {
@@ -185,8 +193,11 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @u
         }
 
         if let slot = SchedulingCalculator.slotTime(from: response.notification.request.identifier) {
-            Log.info("Recording event from notification: slot=\(slot.formatted(date: .omitted, time: .standard)), response=\(responseToRecord)", category: .event)
-            await store.record(.init(scheduledAt: slot, response: responseToRecord,
+            // slotTime returns the +120s notification-adjusted time. Store at the original
+            // unshifted time so activeSlot's recorded-set logic correctly matches it.
+            let originalSlot = slot.addingTimeInterval(-120)
+            Log.info("Recording event from notification: slot=\(originalSlot.formatted(date: .omitted, time: .standard)), response=\(responseToRecord)", category: .event)
+            await store.record(.init(scheduledAt: originalSlot, response: responseToRecord,
                                      personName: settings.personName))
         } else {
             Log.warn("Could not parse slot time from notification id: \(response.notification.request.identifier)", category: .notification)

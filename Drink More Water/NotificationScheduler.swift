@@ -57,9 +57,11 @@ struct NotificationScheduler {
         }
 
         var added = 0
-        for slot in SchedulingCalculator.slots(from: now, to: horizon, settings: settings).map({
+        // Start from now-120 so base slots whose trigger time (+120s) is still in the future
+        // are not skipped when reschedule runs just before a slot fires.
+        for slot in SchedulingCalculator.slots(from: now.addingTimeInterval(-120), to: horizon, settings: settings).map({
             Calendar.current.date(bySetting: .second, value: 0, of: $0.addingTimeInterval(120)) ?? $0.addingTimeInterval(120)
-        }) {
+        }).filter({ $0 > now }) {
             guard added < Self.maxPending else { break }
             guard !recordedSlots.contains(slot) else { continue }
             center.add(buildRequest(for: slot, settings: settings))
@@ -88,10 +90,11 @@ struct NotificationScheduler {
             })
         }
 
-        let candidateSlots = SchedulingCalculator.slots(from: now, to: horizon, settings: settings)
+        let candidateSlots = SchedulingCalculator.slots(from: now.addingTimeInterval(-120), to: horizon, settings: settings)
             .map {
                 Calendar.current.date(bySetting: .second, value: 0, of: $0.addingTimeInterval(120)) ?? $0.addingTimeInterval(120)
             }
+            .filter { $0 > now }
             .filter { !recordedSlots.contains($0) }
             .prefix(Self.maxPending)
             .map { SchedulingCalculator.identifier(for: $0) }
@@ -106,9 +109,9 @@ struct NotificationScheduler {
         semaphore.wait()
 
         var added = 0
-        for slot in SchedulingCalculator.slots(from: now, to: horizon, settings: settings).map({
+        for slot in SchedulingCalculator.slots(from: now.addingTimeInterval(-120), to: horizon, settings: settings).map({
             Calendar.current.date(bySetting: .second, value: 0, of: $0.addingTimeInterval(120)) ?? $0.addingTimeInterval(120)
-        })
+        }).filter({ $0 > now })
         where !recordedSlots.contains(slot) {
             let id = SchedulingCalculator.identifier(for: slot)
             guard candidateSlots.contains(id) else { continue }

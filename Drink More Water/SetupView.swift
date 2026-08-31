@@ -43,6 +43,7 @@ struct SetupView: View {
     private func save(_ settings: AppSettings) {
         settings.hasCompletedSetup = true
         try? context.save()
+        AppSettingsBackup.save(settings)
         showSaved = true
 
         Task {

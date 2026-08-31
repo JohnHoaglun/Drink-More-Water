@@ -25,9 +25,14 @@ final class HydrationEventStore: @unchecked Sendable {
         }
 
         let settings = AppSettings()
+        if AppSettingsBackup.hasBackup {
+            AppSettingsBackup.restore(into: settings)
+            Log.warn("Store was empty — restored settings from UserDefaults backup", category: .settings)
+        } else {
+            Log.info("Created new AppSettings (first launch)", category: .settings)
+        }
         context.insert(settings)
         try? context.save()
-        Log.info("Created new AppSettings (first launch)", category: .settings)
         return settings
     }
 
@@ -64,7 +69,14 @@ final class HydrationEventStore: @unchecked Sendable {
         let context = ModelContext(modelContainer)
 
         let now = Date()
-        let lookbackStart = now.addingTimeInterval(-seconds(from: lookback))
+        // Never backfill before the most recent of: app setup, last history clear.
+        // This prevents fake data after the user intentionally resets history.
+        let lastClear = UserDefaults.standard.object(forKey: "DMW.lastHistoryClear") as? Date
+        let anchor = max(settings.createdAt, lastClear ?? .distantPast)
+        let lookbackStart = max(
+            now.addingTimeInterval(-seconds(from: lookback)),
+            anchor
+        )
 
         let expiredBefore = forceAll
             ? now
@@ -105,7 +117,9 @@ final class HydrationEventStore: @unchecked Sendable {
 
         let now     = Date()
         let cutoff  = now.addingTimeInterval(-window)
-        let lookback = now.addingTimeInterval(-seconds(from: .hours(1)))
+        let lastClear = UserDefaults.standard.object(forKey: "DMW.lastHistoryClear") as? Date
+        let anchor = max(settings.createdAt, lastClear ?? .distantPast)
+        let lookback = max(now.addingTimeInterval(-seconds(from: .hours(1))), anchor)
 
         let start = lookback
         let end   = cutoff
@@ -172,6 +186,7 @@ final class HydrationEventStore: @unchecked Sendable {
         let all = (try? context.fetch(FetchDescriptor<ReminderEvent>())) ?? []
         all.forEach { context.delete($0) }
         try? context.save()
+        UserDefaults.standard.set(Date(), forKey: "DMW.lastHistoryClear")
         Log.info("Cleared all history (\(all.count) records)", category: .event)
         await Task.yield()
     }

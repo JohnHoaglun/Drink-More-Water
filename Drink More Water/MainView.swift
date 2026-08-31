@@ -148,7 +148,7 @@ struct MainView: View {
                 if !events.isEmpty {
                     if fetched.hasCompletedSetup {
                         await store.backfillMissed(settings: fetched, lookback: .hours(24))
-                        await store.autoIgnoreExpired(settings: fetched, window: answerableWindow)
+                        await store.autoIgnoreExpired(settings: fetched, window: answerableWindow + 120)
                         NotificationScheduler(modelContainer: modelContainer).topUp(settings: fetched)
                     }
                 } else {
@@ -160,12 +160,14 @@ struct MainView: View {
             settingsLoaded = true
         }
         .onChange(of: scenePhase) { _, newPhase in
-            NotificationSoundPlayer.shared.stop()
             Log.info("Scene phase changed to: \(newPhase)", category: .app)
             guard newPhase == .active, isConfigured, let settings, !events.isEmpty else { return }
             let store = HydrationEventStore(modelContainer: modelContainer)
             Task {
-                await store.autoIgnoreExpired(settings: settings, window: answerableWindow)
+                // Window = answerableWindow + 120 because base slots are 120s before the
+                // notification fires; giving users answerableWindow seconds AFTER delivery
+                // requires the total window to cover both the stagger and the response time.
+                await store.autoIgnoreExpired(settings: settings, window: answerableWindow + 120)
                 NotificationScheduler(modelContainer: modelContainer).topUp(settings: settings)
             }
         }
@@ -304,7 +306,11 @@ struct MainView: View {
         )
 
         let store = HydrationEventStore(modelContainer: modelContainer)
-        let event = ReminderEvent(scheduledAt: slot, response: type, personName: settings.personName)
+        // activeSlot returns the +120s notification-adjusted time. Store at the original
+        // unshifted time so activeSlot's recorded-set logic (which adds 120 to event.scheduledAt)
+        // correctly matches this event and immediately hides the buttons.
+        let originalSlot = slot.addingTimeInterval(-120)
+        let event = ReminderEvent(scheduledAt: originalSlot, response: type, personName: settings.personName)
         Task {
             await store.record(event)
             DispatchQueue.main.async {
