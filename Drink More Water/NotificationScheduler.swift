@@ -24,6 +24,7 @@ struct NotificationScheduler {
     static func requestAuthorization() async {
         let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
+        logNotificationSettings(settings, reason: "authorization check")
         guard settings.authorizationStatus == .notDetermined else {
             Log.info("Notification auth status: \(settings.authorizationStatus.rawValue)", category: .notification)
             return
@@ -244,8 +245,16 @@ struct NotificationScheduler {
     }
 
     static func logNotificationCenterSnapshot(reason: String) {
+        logNotificationSettings(reason: reason)
         logPendingNotifications(reason: reason)
         logDeliveredNotifications(reason: reason)
+    }
+
+    static func logNotificationSettings(reason: String) {
+        Task {
+            let settings = await UNUserNotificationCenter.current().notificationSettings()
+            logNotificationSettings(settings, reason: reason)
+        }
     }
 
     private static func logPendingNotifications(reason: String, limit: Int = 10, delay: TimeInterval = 0) {
@@ -264,7 +273,7 @@ struct NotificationScheduler {
             let sample = ordered.prefix(limit).map { request in
                 let trigger = triggerDate(for: request)
                 let triggerText = trigger?.formatted(date: .abbreviated, time: .standard) ?? "unknown"
-                return "\(triggerText) id=\(request.identifier)"
+                return "\(triggerText) id=\(request.identifier) \(contentSummary(request.content))"
             }.joined(separator: " | ")
 
             Log.warn(
@@ -278,7 +287,7 @@ struct NotificationScheduler {
         UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
             let ordered = notifications.sorted { $0.date > $1.date }
             let sample = ordered.prefix(limit).map { notification in
-                "\(notification.date.formatted(date: .abbreviated, time: .standard)) id=\(notification.request.identifier)"
+                "\(notification.date.formatted(date: .abbreviated, time: .standard)) id=\(notification.request.identifier) \(contentSummary(notification.request.content))"
             }.joined(separator: " | ")
 
             Log.warn(
@@ -290,5 +299,37 @@ struct NotificationScheduler {
 
     private static func triggerDate(for request: UNNotificationRequest) -> Date? {
         (request.trigger as? UNCalendarNotificationTrigger)?.nextTriggerDate()
+    }
+
+    private static func logNotificationSettings(_ settings: UNNotificationSettings, reason: String) {
+        Log.warn(
+            "[NOTIF SETTINGS] \(reason): " +
+            "auth=\(settings.authorizationStatus.rawValue) " +
+            "alert=\(settingText(settings.alertSetting)) " +
+            "sound=\(settingText(settings.soundSetting)) " +
+            "lockScreen=\(settingText(settings.lockScreenSetting)) " +
+            "notificationCenter=\(settingText(settings.notificationCenterSetting)) " +
+            "scheduledDelivery=\(settingText(settings.scheduledDeliverySetting)) " +
+            "timeSensitive=\(settingText(settings.timeSensitiveSetting)) " +
+            "critical=\(settingText(settings.criticalAlertSetting))",
+            category: .notification
+        )
+    }
+
+    private static func contentSummary(_ content: UNNotificationContent) -> String {
+        let soundName = content.userInfo["soundName"] as? String ?? "nil"
+        let isAudible = content.userInfo["isAudible"] as? Bool
+        let audibleText = isAudible.map(String.init(describing:)) ?? "nil"
+        let sound = content.sound.map { String(describing: $0) } ?? "nil"
+        return "userSound=\(soundName) audible=\(audibleText) contentSound=\(sound) interruption=\(content.interruptionLevel.rawValue)"
+    }
+
+    private static func settingText(_ setting: UNNotificationSetting) -> String {
+        switch setting {
+        case .enabled: return "enabled"
+        case .disabled: return "disabled"
+        case .notSupported: return "notSupported"
+        @unknown default: return "unknown(\(setting.rawValue))"
+        }
     }
 }

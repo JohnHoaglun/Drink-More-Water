@@ -3,5 +3,5 @@ enum Constants {
     static let bgTaskID = "com.johnhoaglun.drinkmorewater.refresh"
 
     /// Increment this with every build deployed to the device so logs identify the exact code version.
-    static let buildTag = "build-8"
+    static let buildTag = "build-9"
 }
