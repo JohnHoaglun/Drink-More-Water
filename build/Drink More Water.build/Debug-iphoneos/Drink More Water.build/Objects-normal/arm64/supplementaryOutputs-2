@@ -1,0 +1,23 @@
+{
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/CSVExporter.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.dia",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/CSVExporter.swiftdeps"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/Constants.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.dia",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/Constants.swiftdeps"
+  },
+  "/Users/johnhoaglun/xcode/projects/Drink More Water/Drink More Water/ContentView.swift" : {
+    "const-values" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.dia",
+    "object" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/johnhoaglun/xcode/projects/Drink More Water/build/Drink More Water.build/Debug-iphoneos/Drink More Water.build/Objects-normal/arm64/ContentView.swiftdeps"
+  }
+}
