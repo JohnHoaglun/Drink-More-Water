@@ -107,6 +107,7 @@ struct Drink_More_WaterApp: App {
             "lastClear=\(String(describing: UserDefaults.standard.object(forKey: "DMW.lastHistoryClear") as? Date))",
             category: .app
         )
+        NotificationScheduler.logNotificationCenterSnapshot(reason: "launch")
     }
 
     var body: some Scene {

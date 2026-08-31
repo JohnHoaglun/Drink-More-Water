@@ -68,6 +68,7 @@ struct NotificationScheduler {
             added += 1
         }
         Log.info("Reschedule complete: scheduled \(added) notification(s) over next 24h", category: .scheduler)
+        Self.logPendingNotifications(reason: "after reschedule", delay: 1)
     }
 
     /// Top-up: add only the slots that aren't already pending. Does NOT wipe existing notifications.
@@ -130,6 +131,7 @@ struct NotificationScheduler {
         }
 
         Log.debug("TopUp complete: added \(added) notification(s), \(alreadyPending.count) already pending", category: .scheduler)
+        Self.logPendingNotifications(reason: "after topUp", delay: 1)
     }
 
     // MARK: -
@@ -239,5 +241,54 @@ struct NotificationScheduler {
             Self._delegateRetainer = delegate
             Log.info("Installed fallback ForegroundDelegate", category: .notification)
         }
+    }
+
+    static func logNotificationCenterSnapshot(reason: String) {
+        logPendingNotifications(reason: reason)
+        logDeliveredNotifications(reason: reason)
+    }
+
+    private static func logPendingNotifications(reason: String, limit: Int = 10, delay: TimeInterval = 0) {
+        if delay > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                logPendingNotifications(reason: reason, limit: limit)
+            }
+            return
+        }
+
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            let ordered = requests.sorted {
+                triggerDate(for: $0) ?? .distantFuture < triggerDate(for: $1) ?? .distantFuture
+            }
+
+            let sample = ordered.prefix(limit).map { request in
+                let trigger = triggerDate(for: request)
+                let triggerText = trigger?.formatted(date: .abbreviated, time: .standard) ?? "unknown"
+                return "\(triggerText) id=\(request.identifier)"
+            }.joined(separator: " | ")
+
+            Log.warn(
+                "[NOTIF SNAPSHOT] \(reason): pending=\(requests.count) first\(min(limit, ordered.count))=[\(sample)]",
+                category: .notification
+            )
+        }
+    }
+
+    private static func logDeliveredNotifications(reason: String, limit: Int = 10) {
+        UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
+            let ordered = notifications.sorted { $0.date > $1.date }
+            let sample = ordered.prefix(limit).map { notification in
+                "\(notification.date.formatted(date: .abbreviated, time: .standard)) id=\(notification.request.identifier)"
+            }.joined(separator: " | ")
+
+            Log.warn(
+                "[NOTIF SNAPSHOT] \(reason): delivered=\(notifications.count) recent\(min(limit, ordered.count))=[\(sample)]",
+                category: .notification
+            )
+        }
+    }
+
+    private static func triggerDate(for request: UNNotificationRequest) -> Date? {
+        (request.trigger as? UNCalendarNotificationTrigger)?.nextTriggerDate()
     }
 }
