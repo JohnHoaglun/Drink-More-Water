@@ -132,7 +132,7 @@ private struct SetupForm: View {
                 }
             }
 
-            Section("Alerts") {
+            Section {
                 Toggle("Audible alerts", isOn: $settings.isAudible)
                 Picker("Tone", selection: $selectedSound) {
                     ForEach(SoundOption.all) { option in
@@ -143,6 +143,10 @@ private struct SetupForm: View {
                 .onChange(of: selectedSound) {
                     playPreview()
                 }
+            } header: {
+                Text("Alerts")
+            } footer: {
+                Text("Apple Watch may receive reminders instead of your locked iPhone. To hear custom sounds on iPhone, turn off Watch mirroring for Drink More Water.")
             }
 
             Section("Developer") {

@@ -55,6 +55,16 @@ struct AboutView: View {
             }
 
             Section {
+                Label("Open the Watch app on iPhone", systemImage: "applewatch")
+                Label("Go to Notifications > Drink More Water", systemImage: "bell")
+                Label("Turn off mirroring to hear custom sounds on iPhone", systemImage: "speaker.wave.2")
+            } header: {
+                Text("Apple Watch Notifications")
+            } footer: {
+                Text("Apple Watch can receive mirrored iPhone reminders while the phone is locked. In that case, watchOS may use its default alert sound instead of the custom iPhone tone.")
+            }
+
+            Section {
                 Button(role: .destructive) {
                     showClearConfirmation = true
                 } label: {
@@ -92,4 +102,3 @@ struct AboutView: View {
         return "\(version) (\(build))"
     }
 }
-
