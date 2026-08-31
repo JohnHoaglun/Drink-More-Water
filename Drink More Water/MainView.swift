@@ -63,7 +63,10 @@ struct MainView: View {
             !containsDate(recorded, date: slot)
         }
 
-        if let overdue = open.last(where: { $0 < now && now.timeIntervalSince($0) < answerableWindow }) {
+        // Guard against pre-setup slots appearing as overdue on a fresh install.
+        if let overdue = open.last(where: {
+            $0 < now && now.timeIntervalSince($0) < answerableWindow && $0 >= settings.createdAt
+        }) {
             return overdue
         }
         if let next = open.first(where: { $0 >= now }) {

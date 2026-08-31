@@ -176,6 +176,7 @@ private struct SetupForm: View {
 
         settings.soundName = selectedSound
         invalidRange = false
+        NotificationSoundPlayer.shared.stop()
         onSaved()
     }
 }
