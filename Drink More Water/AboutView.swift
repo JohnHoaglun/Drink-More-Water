@@ -25,7 +25,10 @@ struct AboutView: View {
                     VStack(alignment: .leading) {
                         Text("Drink More Water")
                             .font(.headline)
-                        Text("Version \(appVersion)")
+                        Text("App version \(appVersion)")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        Text("Build tag \(Constants.buildTag)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                         Text("Author: john@hoaglun.com")
@@ -99,6 +102,6 @@ struct AboutView: View {
     private var appVersion: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
-        return "\(version) (\(build)) - \(Constants.buildTag)"
+        return "\(version) (\(build))"
     }
 }
