@@ -73,14 +73,20 @@ enum Log {
 
     private static let fileLock = NSLock()
     private static var _localHandle: FileHandle?   // local Documents — persistent handle, no iCloud replacement
+    private static var _localLogURL: URL?
     private static var _cloudLogURL: URL?           // iCloud — URL only; opened fresh per write to survive atomic replacement
+    private static var _writesSinceTrim = 0
+    private static let maxLogBytes = 200 * 1024
+    private static let trimInterval = 50
 
     // MARK: Setup
 
     /// Call once from app init. Sets up local file immediately, then iCloud on a background thread.
     static func setup() {
         isVerboseEnabled = UserDefaults.standard.bool(forKey: "AppSettings.isDebugLoggingEnabled")
-        _localHandle = openHandle(at: localLogURL(), label: "Local")
+        let localURL = localLogURL()
+        _localLogURL = localURL
+        _localHandle = openHandle(at: localURL, label: "Local")
 
         // iCloud resolution must happen off the main thread — it can block.
         DispatchQueue.global(qos: .utility).async {
@@ -129,12 +135,37 @@ enum Log {
     }
 
     private static func trimFile(at url: URL) {
-        let maxBytes = 200 * 1024
-        if let existing = try? Data(contentsOf: url), existing.count > maxBytes {
-            try? existing.suffix(maxBytes).write(to: url, options: .atomic)
+        if let existing = try? Data(contentsOf: url), existing.count > maxLogBytes {
+            try? existing.suffix(maxLogBytes).write(to: url, options: .atomic)
         }
         if !FileManager.default.fileExists(atPath: url.path) {
             FileManager.default.createFile(atPath: url.path, contents: nil)
+        }
+    }
+
+    private static func trimActiveLogsIfNeeded() {
+        guard isVerboseEnabled else { return }
+
+        fileLock.lock()
+        _writesSinceTrim += 1
+        guard _writesSinceTrim >= trimInterval else {
+            fileLock.unlock()
+            return
+        }
+        _writesSinceTrim = 0
+
+        let localURL = _localLogURL
+        let cloudURL = _cloudLogURL
+        _localHandle?.closeFile()
+        if let localURL {
+            trimFile(at: localURL)
+            _localHandle = try? FileHandle(forWritingTo: localURL)
+            _localHandle?.seekToEndOfFile()
+        }
+        fileLock.unlock()
+
+        if let cloudURL {
+            trimFile(at: cloudURL)
         }
     }
 
@@ -220,6 +251,7 @@ enum Log {
         if cloudURL != nil {
             appendToFile(at: cloudURL!, string: line_str)
         }
+        trimActiveLogsIfNeeded()
     }
 
     static func debug(_ message: String, category: LogCategory = .app, file: String = #file, function: String = #function, line: Int = #line) {
