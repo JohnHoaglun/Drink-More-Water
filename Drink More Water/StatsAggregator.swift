@@ -21,10 +21,10 @@ enum StatsAggregator {
     static func buckets(
         for events: [ReminderEvent],
         granularity: Granularity,
-        bucketCount: Int
+        bucketCount: Int,
+        now: Date = Date()
     ) -> [StatsBucket] {
         let calendar = Calendar.current
-        let now = Date()
 
         // Anchors: the start of each trailing bucket, oldest first.
         var anchors: [Date] = []

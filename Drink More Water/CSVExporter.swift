@@ -10,14 +10,20 @@ enum CSVExporter {
 
         var lines = ["scheduled_at,response,person"]
         for event in sorted {
-            let name = event.personName.contains(",")
-                ? "\"\(event.personName)\""
-                : event.personName
+            let name = escaped(event.personName)
             lines.append(
                 "\(formatter.string(from: event.scheduledAt)),\(event.response.rawValue),\(name)"
             )
         }
         return lines.joined(separator: "\n")
+    }
+
+    private static func escaped(_ field: String) -> String {
+        guard field.contains(",") || field.contains("\"") || field.contains("\n") else {
+            return field
+        }
+
+        return "\"\(field.replacingOccurrences(of: "\"", with: "\"\""))\""
     }
 }
 
