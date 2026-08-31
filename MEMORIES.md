@@ -13,6 +13,8 @@ Required steps before loading code on the phone:
    `build-N: short description`
 3. Push the commit to the upstream branch before installing/running that build on the phone.
 
+The About page must display `Constants.buildTag` so the build loaded on a phone can be identified from the UI as well as from logs.
+
 Current observed branch policy:
 
 - Active branch: `dev`
