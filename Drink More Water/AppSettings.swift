@@ -17,7 +17,8 @@ enum AppSettingsBackup {
         ud.set(s.isAudible,         forKey: prefix + "isAudible")
         ud.set(s.soundName,         forKey: prefix + "soundName")
         ud.set(s.personName,        forKey: prefix + "personName")
-        ud.set(s.hasCompletedSetup, forKey: prefix + "hasCompletedSetup")
+        ud.set(s.hasCompletedSetup,      forKey: prefix + "hasCompletedSetup")
+        ud.set(s.isDebugLoggingEnabled,  forKey: prefix + "isDebugLoggingEnabled")
         Log.info("Settings backed up to UserDefaults (sound=\(s.soundName), audible=\(s.isAudible))", category: .settings)
     }
 
@@ -35,7 +36,8 @@ enum AppSettingsBackup {
         s.isAudible         = ud.bool(forKey: prefix + "isAudible")
         s.soundName         = ud.string(forKey: prefix + "soundName") ?? "default"
         s.personName        = ud.string(forKey: prefix + "personName") ?? "You"
-        s.hasCompletedSetup = ud.bool(forKey: prefix + "hasCompletedSetup")
+        s.hasCompletedSetup     = ud.bool(forKey: prefix + "hasCompletedSetup")
+        s.isDebugLoggingEnabled = ud.bool(forKey: prefix + "isDebugLoggingEnabled")
         Log.info("Settings restored from UserDefaults backup (sound=\(s.soundName), audible=\(s.isAudible))", category: .settings)
     }
 }
@@ -55,6 +57,7 @@ final class AppSettings {
     var soundName: String      // reserved for v2 custom sounds; v1 uses system default
     var personName: String     // display label for stats
     var hasCompletedSetup: Bool // true only after the user saves in Setup
+    var isDebugLoggingEnabled: Bool
     var createdAt: Date
 
     init(
@@ -75,6 +78,7 @@ final class AppSettings {
         self.soundName = soundName
         self.personName = personName
         self.hasCompletedSetup = false
+        self.isDebugLoggingEnabled = false
         self.createdAt = Date()
     }
 }

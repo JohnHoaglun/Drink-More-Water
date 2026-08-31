@@ -72,6 +72,15 @@ struct NotificationScheduler {
 
     /// Top-up: add only the slots that aren't already pending. Does NOT wipe existing notifications.
     func topUp(settings: AppSettings) {
+        // Record the first time topUp runs this install. UserDefaults is cleared when
+        // the app is deleted, so this timestamp resets on reinstall. MainView uses it
+        // to prevent pre-install slots from appearing as overdue (fixes iCloud/backup restore).
+        let installKey = "DMW.firstTopUpTimeThisInstall"
+        if UserDefaults.standard.object(forKey: installKey) == nil {
+            UserDefaults.standard.set(Date(), forKey: installKey)
+            Log.warn("First topUp this install — recorded firstTopUpTimeThisInstall", category: .scheduler)
+        }
+
         Log.debug("TopUp: checking for missing notification slots", category: .scheduler)
         Self.installNotificationHandling()
         let center = UNUserNotificationCenter.current()

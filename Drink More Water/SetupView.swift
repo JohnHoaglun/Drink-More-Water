@@ -145,6 +145,10 @@ private struct SetupForm: View {
                 }
             }
 
+            Section("Developer") {
+                Toggle("Debug Logging", isOn: $settings.isDebugLoggingEnabled)
+            }
+
             if invalidRange {
                 Section {
                     Text("The last reminder must be after the first one.")
@@ -177,6 +181,7 @@ private struct SetupForm: View {
         settings.soundName = selectedSound
         invalidRange = false
         NotificationSoundPlayer.shared.stop()
+        Log.isVerboseEnabled = settings.isDebugLoggingEnabled
         onSaved()
     }
 }

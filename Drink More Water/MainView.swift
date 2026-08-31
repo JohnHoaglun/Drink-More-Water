@@ -63,9 +63,16 @@ struct MainView: View {
             !containsDate(recorded, date: slot)
         }
 
-        // Guard against pre-setup slots appearing as overdue on a fresh install.
+        // Only show overdue buttons for slots at or after the time notifications were
+        // first scheduled this install. firstTopUpTimeThisInstall lives in UserDefaults,
+        // which is cleared when the app is deleted, so a reinstall always starts fresh
+        // even if iCloud or AppSettingsBackup restores old settings.
+        let firstTopUp = UserDefaults.standard.object(forKey: "DMW.firstTopUpTimeThisInstall") as? Date ?? Date()
+        let lastClear  = UserDefaults.standard.object(forKey: "DMW.lastHistoryClear") as? Date ?? .distantPast
+        let slotLowerBound = max(firstTopUp, lastClear)
+
         if let overdue = open.last(where: {
-            $0 < now && now.timeIntervalSince($0) < answerableWindow && $0 >= settings.createdAt
+            $0 < now && now.timeIntervalSince($0) < answerableWindow && $0 >= slotLowerBound
         }) {
             return overdue
         }
@@ -148,6 +155,7 @@ struct MainView: View {
         .task {
             let store = HydrationEventStore(modelContainer: modelContainer)
             if let fetched = store.fetchOrCreateSettings() {
+                logStartupState(fetched)
                 if !events.isEmpty {
                     if fetched.hasCompletedSetup {
                         await store.backfillMissed(settings: fetched, lookback: .hours(24))
@@ -321,6 +329,24 @@ struct MainView: View {
                 settingsLoaded = true
             }
         }
+    }
+
+    // MARK: Startup diagnostics
+
+    private func logStartupState(_ s: AppSettings) {
+        let firstTopUp = UserDefaults.standard.object(forKey: "DMW.firstTopUpTimeThisInstall") as? Date
+        let lastClear  = UserDefaults.standard.object(forKey: "DMW.lastHistoryClear") as? Date
+        Log.warn(
+            "[STARTUP STATE] hasSetup=\(s.hasCompletedSetup) events=\(events.count) " +
+            "interval=\(s.intervalMinutes)min " +
+            "schedule=\(s.startHour):\(String(format: "%02d", s.startMinute))-\(s.endHour):\(String(format: "%02d", s.endMinute)) " +
+            "sound=\(s.soundName) audible=\(s.isAudible) " +
+            "createdAt=\(s.createdAt.formatted(date: .abbreviated, time: .standard)) " +
+            "firstTopUp=\(firstTopUp?.formatted(date: .abbreviated, time: .standard) ?? "nil") " +
+            "lastClear=\(lastClear?.formatted(date: .abbreviated, time: .standard) ?? "nil") " +
+            "debugLog=\(s.isDebugLoggingEnabled)",
+            category: .app
+        )
     }
 
     // MARK: Formatting

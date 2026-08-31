@@ -51,6 +51,12 @@ enum Log {
         return f
     }()
 
+    // MARK: Verbose gate
+
+    /// When false, debug and info messages are suppressed everywhere (file, OSLog, buffer).
+    /// warn and error always log. Controlled by the Debug Logging toggle in Setup.
+    static var isVerboseEnabled: Bool = false
+
     // MARK: In-memory buffer
 
     private static let bufferLock = NSLock()
@@ -73,6 +79,7 @@ enum Log {
 
     /// Call once from app init. Sets up local file immediately, then iCloud on a background thread.
     static func setup() {
+        isVerboseEnabled = UserDefaults.standard.bool(forKey: "AppSettings.isDebugLoggingEnabled")
         _localHandle = openHandle(at: localLogURL(), label: "Local")
 
         // iCloud resolution must happen off the main thread — it can block.
@@ -167,6 +174,11 @@ enum Log {
         function: String = #function,
         line: Int = #line
     ) {
+        // Suppress debug/info when verbose logging is disabled; warn/error always go through.
+        if severity == .debug || severity == .info {
+            guard isVerboseEnabled else { return }
+        }
+
         let now = Date()
         let filename = (file as NSString).lastPathComponent
         let entry = LogEntry(

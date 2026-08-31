@@ -20,6 +20,15 @@ final class HydrationEventStore: @unchecked Sendable {
         descriptor.fetchLimit = 1
 
         if let existing = try? context.fetch(descriptor).first {
+            Log.warn(
+                "[SETTINGS] Loaded existing — hasSetup=\(existing.hasCompletedSetup) " +
+                "createdAt=\(existing.createdAt.formatted(date: .abbreviated, time: .standard)) " +
+                "interval=\(existing.intervalMinutes)min " +
+                "schedule=\(existing.startHour):\(String(format: "%02d", existing.startMinute))-\(existing.endHour):\(String(format: "%02d", existing.endMinute)) " +
+                "sound=\(existing.soundName) audible=\(existing.isAudible) " +
+                "debugLog=\(existing.isDebugLoggingEnabled)",
+                category: .settings
+            )
             migrateSoundName(context, existing)
             return existing
         }

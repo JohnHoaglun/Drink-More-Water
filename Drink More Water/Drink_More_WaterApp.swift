@@ -99,7 +99,14 @@ struct Drink_More_WaterApp: App {
             await NotificationScheduler.requestAuthorization()
         }
 
-        Log.info("App launched — \(Constants.buildTag) — modelContainer ready", category: .app)
+        Log.warn(
+            "[LAUNCH] \(Constants.buildTag) " +
+            "hasUDBackup=\(AppSettingsBackup.hasBackup) " +
+            "debugLog=\(UserDefaults.standard.bool(forKey: "AppSettings.isDebugLoggingEnabled")) " +
+            "firstTopUp=\(String(describing: UserDefaults.standard.object(forKey: "DMW.firstTopUpTimeThisInstall") as? Date)) " +
+            "lastClear=\(String(describing: UserDefaults.standard.object(forKey: "DMW.lastHistoryClear") as? Date))",
+            category: .app
+        )
     }
 
     var body: some Scene {
