@@ -40,5 +40,7 @@ Observed behavior:
 1. With Apple Watch mirroring enabled, a locked/asleep iPhone may route the alert to Apple Watch. In that path, the watch played only the default system beep.
 2. After disabling mirrored notifications for Drink More Water in the Watch app, locked-phone reminders played the selected custom CAF sound on the iPhone.
 3. Logs confirmed pending notifications had `userSound=Drink4.caf`, `audible=true`, and a non-nil `UNNotificationSound`.
+4. Fresh install, or deleting the app and reinstalling it, appears to reset the Apple Watch notification mirroring path to the default enabled state.
+5. Installing an app update over the existing app/data appears to retain the user's Watch mirroring preference.
 
 Conclusion: the CAF files and iPhone notification payload are valid. If custom audio is not heard while Apple Watch is paired, first check Watch notification mirroring before reinvestigating app-side sound compliance.

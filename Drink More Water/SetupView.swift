@@ -146,7 +146,7 @@ private struct SetupForm: View {
             } header: {
                 Text("Alerts")
             } footer: {
-                Text("Apple Watch may receive reminders instead of your locked iPhone. To hear custom sounds on iPhone, turn off Watch mirroring for Drink More Water.")
+                Text("If you use Apple Watch, first installs may mirror reminders to the watch instead of playing custom sounds on your locked iPhone. Turn off Watch mirroring for Drink More Water to keep sounds on iPhone.")
             }
 
             Section("Developer") {

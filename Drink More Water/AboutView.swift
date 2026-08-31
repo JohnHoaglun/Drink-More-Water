@@ -60,11 +60,11 @@ struct AboutView: View {
             Section {
                 Label("Open the Watch app on iPhone", systemImage: "applewatch")
                 Label("Go to Notifications > Drink More Water", systemImage: "bell")
-                Label("Turn off mirroring to hear custom sounds on iPhone", systemImage: "speaker.wave.2")
+                Label("Turn off mirroring if reminders sound on the watch", systemImage: "speaker.wave.2")
             } header: {
                 Text("Apple Watch Notifications")
             } footer: {
-                Text("Apple Watch can receive mirrored iPhone reminders while the phone is locked. In that case, watchOS may use its default alert sound instead of the custom iPhone tone.")
+                Text("On fresh installs, Apple Watch may mirror iPhone reminders while the phone is locked and use the watch default sound. Upgrades over an existing install should keep this Watch setting.")
             }
 
             Section {
