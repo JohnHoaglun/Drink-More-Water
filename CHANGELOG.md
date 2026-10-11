@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 — build-16 (2026-10-11)
+
+- Fixed: tapping OK on the "Schedule updated" alert in Setup left the user on the Setup tab, feeling locked in. OK now returns to the Home tab.
+  - `RootView` now owns the `TabView` selection (`AppTab`); `SetupView` takes an `onDone` callback that the alert invokes.
+
 ## 1.0.1 — build-15 (2026-10-11)
 
 - Added a "Reminder timer" toggle to the Setup page (Timer section between Schedule and Alerts).

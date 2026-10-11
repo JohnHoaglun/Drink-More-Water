@@ -6,6 +6,7 @@ import AudioToolbox
 /// Spec: "Setup screen" — start/end time, interval, sound, name.
 struct SetupView: View {
     let modelContainer: ModelContainer
+    var onDone: () -> Void
     @Environment(\.modelContext) private var context
     @State private var settings: AppSettings?
     @State private var showSaved = false
@@ -36,7 +37,9 @@ struct SetupView: View {
             }
         }
         .alert("Schedule updated", isPresented: $showSaved) {
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {
+                onDone()
+            }
         }
     }
 

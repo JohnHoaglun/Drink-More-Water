@@ -8,6 +8,7 @@ struct RootView: View {
     let modelContainer: ModelContainer
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @Environment(\.scenePhase) private var scenePhase
+    @State private var selectedTab: AppTab = .home
 
     var body: some View {
         Group {
@@ -28,10 +29,11 @@ struct RootView: View {
     }
 
     private var mainTabs: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             NavigationStack {
                 MainView(modelContainer: modelContainer)
             }
+            .tag(AppTab.home)
             .tabItem {
                 Label("Home", systemImage: "drop.fill")
             }
@@ -39,13 +41,17 @@ struct RootView: View {
             NavigationStack {
                 ReportingView(modelContainer: modelContainer)
             }
+            .tag(AppTab.stats)
             .tabItem {
                 Label("Stats", systemImage: "chart.bar")
             }
 
             NavigationStack {
-                SetupView(modelContainer: modelContainer)
+                SetupView(modelContainer: modelContainer) {
+                    selectedTab = .home
+                }
             }
+            .tag(AppTab.setup)
             .tabItem {
                 Label("Setup", systemImage: "gearshape")
             }
@@ -53,9 +59,17 @@ struct RootView: View {
             NavigationStack {
                 AboutView(modelContainer: modelContainer)
             }
+            .tag(AppTab.about)
             .tabItem {
                 Label("About", systemImage: "info.circle")
             }
         }
     }
+}
+
+enum AppTab: Hashable {
+    case home
+    case stats
+    case setup
+    case about
 }
