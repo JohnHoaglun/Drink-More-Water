@@ -37,6 +37,7 @@
 		B337237A3033FA8F004E3347 /* Drink More Water.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Drink More Water.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B33723873033FA91004E3347 /* Drink More WaterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Drink More WaterTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B33723913033FA91004E3347 /* Drink More WaterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Drink More WaterUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B34FCCB0307C564A002C4F17 /* Drink-More-Water-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Drink-More-Water-Info.plist"; sourceTree = "<group>"; };
 		B35C78863035371E0073FFAD /* Drink More Water.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Drink More Water.xctestplan"; sourceTree = "<group>"; };
 		B3700D9330369F99007D84B4 /* Drum3.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drum3.caf; path = audio/Small/Drum3.caf; sourceTree = "<group>"; };
 		B3700D9430369F99007D84B4 /* Drum1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Drum1.caf; path = audio/Small/Drum1.caf; sourceTree = "<group>"; };
@@ -93,6 +94,7 @@
 		B33723713033FA8F004E3347 = {
 			isa = PBXGroup;
 			children = (
+				B34FCCB0307C564A002C4F17 /* Drink-More-Water-Info.plist */,
 				B3700D9830369F99007D84B4 /* Drink1.caf */,
 				B3700D9930369F99007D84B4 /* Drink2.caf */,
 				B3700D9730369F99007D84B4 /* Drink3.caf */,
@@ -434,6 +436,7 @@
 				DEVELOPMENT_TEAM = R897H75XV4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Drink-More-Water-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -443,8 +446,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = "Hoaglun.com.Drink-More-Water";
+				MARKETING_VERSION = 1.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hoaglun.drinkmorewater;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -467,6 +470,7 @@
 				DEVELOPMENT_TEAM = R897H75XV4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Drink-More-Water-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -476,8 +480,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = "Hoaglun.com.Drink-More-Water";
+				MARKETING_VERSION = 1.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hoaglun.drinkmorewater;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -499,7 +503,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Hoaglun.com.Drink-More-WaterTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hoaglun.drinkmorewaterTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -521,7 +525,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Hoaglun.com.Drink-More-WaterTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hoaglun.drinkmorewaterTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -541,7 +545,7 @@
 				DEVELOPMENT_TEAM = R897H75XV4;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Hoaglun.com.Drink-More-WaterUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hoaglun.drinkmorewaterUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -561,7 +565,7 @@
 				DEVELOPMENT_TEAM = R897H75XV4;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Hoaglun.com.Drink-More-WaterUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hoaglun.drinkmorewaterUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

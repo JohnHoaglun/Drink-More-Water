@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.4 — build-18 (2026-10-11)
+
+- Standardized app identifiers to the `com.hoaglun.<lowercase-appname>` convention (reverse-DNS, all lowercase, matching `Forgot the Milk`):
+  - App bundle ID: `Hoaglun.com.Drink-More-Water` → `com.hoaglun.drinkmorewater` (unit/UI test targets follow: `…Tests`, `…UITests`).
+  - iCloud container: `iCloud.Hoaglun.com.Drink-More-Water` → `iCloud.com.hoaglun.drinkmorewater` (entitlements ×2 and `Log.iCloudContainerID`).
+  - Background task ID: `com.johnhoaglun.drinkmorewater.refresh` → `com.hoaglun.drinkmorewater.refresh` (`Constants.bgTaskID`).
+  - The app is new to the device after this change: on-device app data and the iCloud container start fresh, and notification permission is re-requested on next install.
+- Fixed: App Refresh background mode was never declared, so `BGAppRefreshTask` could never run on device and the background top-up silently failed. Added `UIBackgroundModes = [fetch]` via `Drink-More-Water-Info.plist` (referenced by the app target's `INFOPLIST_FILE`, merged with the generated Info.plist).
+
 ## 1.0.3 — build-17 (2026-10-11)
 
 - Docs: added `TODO.md` with environment notes — the repo now lives on a NAS-mounted SMB share (local git config sets `core.filemode=false` / `core.trustmtime=false` to suppress mode/mtime noise), and Xcode test runs target the connected physical iPhone (`RunAllTests` shows the XCUITest automation banner on-device; prefer `BuildProject` + `RunProject` for quick verification).

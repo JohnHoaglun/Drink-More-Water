@@ -1,7 +1,7 @@
 enum Constants {
     /// Must match the identifier in your target's Background Modes > Background Tasks > App Refresh Tasks.
-    static let bgTaskID = "com.johnhoaglun.drinkmorewater.refresh"
+    static let bgTaskID = "com.hoaglun.drinkmorewater.refresh"
 
     /// Increment this with every build deployed to the device so logs identify the exact code version.
-    static let buildTag = "build-17"
+    static let buildTag = "build-18"
 }

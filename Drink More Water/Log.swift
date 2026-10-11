@@ -43,7 +43,7 @@ enum Log {
     static let subsystem = Bundle.main.bundleIdentifier ?? "DrinkMoreWater"
 
     /// iCloud container — must match the entitlement added in Signing & Capabilities.
-    static let iCloudContainerID = "iCloud.Hoaglun.com.Drink-More-Water"
+    static let iCloudContainerID = "iCloud.com.hoaglun.drinkmorewater"
 
     private static let formatter: DateFormatter = {
         let f = DateFormatter()
