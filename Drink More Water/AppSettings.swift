@@ -19,7 +19,8 @@ enum AppSettingsBackup {
         ud.set(s.personName,        forKey: prefix + "personName")
         ud.set(s.hasCompletedSetup,      forKey: prefix + "hasCompletedSetup")
         ud.set(s.isDebugLoggingEnabled,  forKey: prefix + "isDebugLoggingEnabled")
-        Log.info("Settings backed up to UserDefaults (sound=\(s.soundName), audible=\(s.isAudible))", category: .settings)
+        ud.set(s.isTimerEnabled,         forKey: prefix + "isTimerEnabled")
+        Log.info("Settings backed up to UserDefaults (sound=\(s.soundName), audible=\(s.isAudible), timer=\(s.isTimerEnabled ? "on" : "off"))", category: .settings)
     }
 
     static var hasBackup: Bool {
@@ -38,7 +39,11 @@ enum AppSettingsBackup {
         s.personName        = ud.string(forKey: prefix + "personName") ?? "You"
         s.hasCompletedSetup     = ud.bool(forKey: prefix + "hasCompletedSetup")
         s.isDebugLoggingEnabled = ud.bool(forKey: prefix + "isDebugLoggingEnabled")
-        Log.info("Settings restored from UserDefaults backup (sound=\(s.soundName), audible=\(s.isAudible))", category: .settings)
+        // Pre-feature backups lack the key; default to timer on.
+        s.isTimerEnabled        = ud.object(forKey: prefix + "isTimerEnabled") == nil
+            ? true
+            : ud.bool(forKey: prefix + "isTimerEnabled")
+        Log.info("Settings restored from UserDefaults backup (sound=\(s.soundName), audible=\(s.isAudible), timer=\(s.isTimerEnabled ? "on" : "off"))", category: .settings)
     }
 }
 
@@ -58,6 +63,7 @@ final class AppSettings {
     var personName: String     // display label for stats
     var hasCompletedSetup: Bool // true only after the user saves in Setup
     var isDebugLoggingEnabled: Bool
+    var isTimerEnabled: Bool    // false = timer stopped, no reminders scheduled
     var createdAt: Date
 
     init(
@@ -66,7 +72,8 @@ final class AppSettings {
         intervalMinutes: Int = 15,
         isAudible: Bool = true,
         soundName: String = "default",
-        personName: String = "You"
+        personName: String = "You",
+        isTimerEnabled: Bool = true
     ) {
         self.id = UUID()
         self.startHour = startHour
@@ -78,6 +85,7 @@ final class AppSettings {
         self.soundName = soundName
         self.personName = personName
         self.hasCompletedSetup = false
+        self.isTimerEnabled = isTimerEnabled
         self.isDebugLoggingEnabled = false
         self.createdAt = Date()
     }

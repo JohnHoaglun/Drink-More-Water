@@ -43,6 +43,11 @@ struct NotificationScheduler {
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
 
+        guard settings.isTimerEnabled else {
+            Log.info("Reschedule complete: timer disabled — all pending notifications cleared, nothing scheduled", category: .scheduler)
+            return
+        }
+
         let now = Date()
         let horizon = now.addingTimeInterval(24 * 3600)
 
@@ -74,6 +79,11 @@ struct NotificationScheduler {
 
     /// Top-up: add only the slots that aren't already pending. Does NOT wipe existing notifications.
     func topUp(settings: AppSettings) {
+        guard settings.isTimerEnabled else {
+            Log.debug("TopUp skipped: timer disabled", category: .scheduler)
+            return
+        }
+
         // Record the first time topUp runs this install. UserDefaults is cleared when
         // the app is deleted, so this timestamp resets on reinstall. MainView uses it
         // to prevent pre-install slots from appearing as overdue (fixes iCloud/backup restore).

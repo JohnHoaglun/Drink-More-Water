@@ -124,6 +124,38 @@ struct CSVExporterTests {
     }
 }
 
+struct AppSettingsTimerTests {
+    @Test func newSettingsDefaultToTimerEnabled() {
+        #expect(AppSettings().isTimerEnabled == true)
+    }
+
+    @Test func backupRoundTripsTimerState() {
+        let enabled = AppSettings()
+        enabled.isTimerEnabled = true
+        AppSettingsBackup.save(enabled)
+
+        var disabled = AppSettings()
+        disabled.isTimerEnabled = false
+        AppSettingsBackup.save(disabled)
+
+        let restored = AppSettings()
+        AppSettingsBackup.restore(into: restored)
+
+        #expect(restored.isTimerEnabled == false)
+
+        AppSettingsBackup.save(enabled)
+    }
+
+    @Test func restoreDefaultsTimerOnWhenBackupKeyMissing() {
+        UserDefaults.standard.removeObject(forKey: "AppSettings.isTimerEnabled")
+
+        let restored = AppSettings()
+        AppSettingsBackup.restore(into: restored)
+
+        #expect(restored.isTimerEnabled == true)
+    }
+}
+
 private func date(
     year: Int,
     month: Int,

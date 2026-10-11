@@ -133,6 +133,14 @@ private struct SetupForm: View {
             }
 
             Section {
+                Toggle("Reminder timer", isOn: $settings.isTimerEnabled)
+            } header: {
+                Text("Timer")
+            } footer: {
+                Text("When off, the timer stops and no drink reminders are scheduled. Turn it back on any time to resume.")
+            }
+
+            Section {
                 Toggle("Audible alerts", isOn: $settings.isAudible)
                 Picker("Tone", selection: $selectedSound) {
                     ForEach(SoundOption.all) { option in

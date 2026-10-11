@@ -125,6 +125,8 @@ struct MainView: View {
             if !settingsLoaded {
                 ProgressView()
                     .tint(.white)
+            } else if isConfigured, settings?.isTimerEnabled == false {
+                timerStoppedContent
             } else if isConfigured {
                 activeContent
             } else {
@@ -268,6 +270,29 @@ struct MainView: View {
         }
     }
 
+    // MARK: Timer stopped
+
+    private var timerStoppedContent: some View {
+        VStack(spacing: 14) {
+            Spacer()
+            Image(systemName: "timer.slash")
+                .font(.system(size: 48))
+                .foregroundStyle(.white.opacity(0.7))
+            Text("Timer Stopped")
+                .font(.headline)
+                .foregroundStyle(.white)
+            Text("The reminder timer is off. Open Setup and turn on the Reminder timer to get back to it.")
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.7))
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer()
+        }
+        .frame(maxWidth: 280)
+        .padding(24)
+    }
+
     // MARK: Placeholder
 
     private var placeholder: some View {
@@ -340,7 +365,7 @@ struct MainView: View {
             "[STARTUP STATE] hasSetup=\(s.hasCompletedSetup) events=\(events.count) " +
             "interval=\(s.intervalMinutes)min " +
             "schedule=\(s.startHour):\(String(format: "%02d", s.startMinute))-\(s.endHour):\(String(format: "%02d", s.endMinute)) " +
-            "sound=\(s.soundName) audible=\(s.isAudible) " +
+            "sound=\(s.soundName) audible=\(s.isAudible) timer=\(s.isTimerEnabled ? "on" : "off") " +
             "createdAt=\(s.createdAt.formatted(date: .abbreviated, time: .standard)) " +
             "firstTopUp=\(firstTopUp?.formatted(date: .abbreviated, time: .standard) ?? "nil") " +
             "lastClear=\(lastClear?.formatted(date: .abbreviated, time: .standard) ?? "nil") " +
