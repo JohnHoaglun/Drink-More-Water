@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3 — build-17 (2026-10-11)
+
+- Docs: added `TODO.md` with environment notes — the repo now lives on a NAS-mounted SMB share (local git config sets `core.filemode=false` / `core.trustmtime=false` to suppress mode/mtime noise), and Xcode test runs target the connected physical iPhone (`RunAllTests` shows the XCUITest automation banner on-device; prefer `BuildProject` + `RunProject` for quick verification).
+
 ## 1.0.2 — build-16 (2026-10-11)
 
 - Fixed: tapping OK on the "Schedule updated" alert in Setup left the user on the Setup tab, feeling locked in. OK now returns to the Home tab.
